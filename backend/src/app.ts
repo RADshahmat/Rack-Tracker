@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { requestLogger } from './shared/logger';
 import { errorHandler } from './shared/errorHandler';
 import { bodySanitizer } from './shared/sanitizer';
@@ -36,10 +37,11 @@ app.use((_req, res, next) => {
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,
+    credentials: true,                               
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(requestLogger);
 app.use(bodySanitizer);
 
