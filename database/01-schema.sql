@@ -67,3 +67,18 @@ CREATE INDEX idx_racks_created_at ON racks(created_at DESC);
 CREATE INDEX idx_equipment_tag ON equipment(tag);
 CREATE INDEX idx_equipment_rack_id ON equipment(rack_id);
 CREATE INDEX idx_equipment_created_at ON equipment(created_at DESC);
+
+
+-- upload attachments table
+CREATE TABLE IF NOT EXISTS rack_attachments (
+    id            SERIAL PRIMARY KEY,
+    rack_id       INT          NOT NULL REFERENCES racks(id) ON DELETE CASCADE,
+    filename      VARCHAR(255) NOT NULL,        -- UUID filename on disk
+    original_name VARCHAR(255) NOT NULL,        -- user's original filename
+    file_path     VARCHAR(500) NOT NULL,        -- full path on disk
+    file_size     INT          NOT NULL,        -- bytes
+    uploaded_by   INT          REFERENCES users(id) ON DELETE SET NULL,
+    created_at    TIMESTAMPTZ  DEFAULT NOW()
+);
+
+CREATE INDEX idx_rack_attachments_rack_id ON rack_attachments(rack_id);

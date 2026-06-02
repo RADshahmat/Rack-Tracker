@@ -1,4 +1,4 @@
-# Rack Tracker v1
+# Rack Tracker
 
 > Full-stack inventory management system for tracking equipment placement in physical racks.
 > Express 5 + TypeScript + PostgreSQL + React 19 + Docker

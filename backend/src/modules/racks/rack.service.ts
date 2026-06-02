@@ -1,5 +1,7 @@
+import fs from 'fs';
+import path from 'path';
 import rackRepository, { IRackRepository } from './rack.repository';
-import { Rack, CreateRackInput, UpdateRackInput } from './rack.types';
+import { Rack, CreateRackInput, UpdateRackInput, RackAttachment } from './rack.types';
 import { AppError } from '../../shared/errorHandler';
 
 class RackService {
@@ -93,6 +95,63 @@ class RackService {
         const deleted = await this.repository.delete(id);
         if (!deleted) {
             throw new AppError(500, 'Failed to delete rack');
+        }
+    }
+
+    async uploadAttachment(
+        rackId: number,
+        file: Express.Multer.File,
+        uploadedBy: number
+    ): Promise<RackAttachment> {
+        // Verify rack exists
+        const rack = await this.repository.findById(rackId);
+        if (!rack) {
+            // Clean up uploaded file since rack doesn't exist
+            this.deleteFileFromDisk(file.path);
+            throw new AppError(404, `Rack with ID ${rackId} not found`);
+        }
+
+        return await this.repository.createAttachment({
+            rack_id: rackId,
+            filename: file.filename,            // UUID name
+            original_name: file.originalname,   // user's name
+            file_path: file.path,
+            file_size: file.size,
+            uploaded_by: uploadedBy,
+        });
+    }
+
+    async getAttachments(rackId: number): Promise<RackAttachment[]> {
+        const rack = await this.repository.findById(rackId);
+        if (!rack) {
+            throw new AppError(404, `Rack with ID ${rackId} not found`);
+        }
+        return await this.repository.findAttachmentsByRackId(rackId);
+    }
+
+    async deleteAttachment(attachmentId: number, userId: number, role: string): Promise<void> {
+        const attachment = await this.repository.findAttachmentById(attachmentId);
+        if (!attachment) {
+            throw new AppError(404, `Attachment with ID ${attachmentId} not found`);
+        }
+
+        // Only admin or the uploader can delete
+        if (role !== 'admin' && attachment.uploaded_by !== userId) {
+            throw new AppError(403, 'You do not have permission to delete this attachment');
+        }
+
+        await this.repository.deleteAttachment(attachmentId);
+        this.deleteFileFromDisk(attachment.file_path);
+    }
+
+    private deleteFileFromDisk(filePath: string): void {
+        try {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        } catch (err) {
+            // Log but don't throw — DB record is source of truth
+            console.error(`Failed to delete file from disk: ${filePath}`, err);
         }
     }
 }

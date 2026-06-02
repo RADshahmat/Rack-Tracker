@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import rackService from './rack.service';
 import { createRackSchema, updateRackSchema } from './rack.schema';
@@ -119,6 +120,99 @@ class RackController {
             const response: ApiResponse = {
                 success: true,
                 message: 'Rack deleted successfully',
+            };
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    async upload(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const rackId = parseInt(req.params.id, 10);
+            if (isNaN(rackId)) {
+                // Clean up file if ID is invalid
+                if (req.file) fs.unlinkSync(req.file.path);
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid rack ID',
+                });
+                return;
+            }
+
+            if (!req.file) {
+                res.status(400).json({
+                    success: false,
+                    message: 'No file uploaded',
+                });
+                return;
+            }
+
+            const attachment = await rackService.uploadAttachment(
+                rackId,
+                req.file,
+                req.user!.userId
+            );
+
+            const response: ApiResponse = {
+                success: true,
+                message: 'File uploaded successfully',
+                data: attachment,
+            };
+            res.status(201).json(response);
+        } catch (error) {
+            // Clean up file on any error
+            if (req.file) {
+                try { fs.unlinkSync(req.file.path); } catch (_) { }
+            }
+            next(error);
+        }
+    }
+
+    async getAttachments(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const rackId = parseInt(req.params.id, 10);
+            if (isNaN(rackId)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid rack ID',
+                });
+                return;
+            }
+
+            const attachments = await rackService.getAttachments(rackId);
+            const response: ApiResponse = {
+                success: true,
+                message: 'Attachments retrieved successfully',
+                data: attachments,
+            };
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteAttachment(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const attachmentId = parseInt(req.params.attachmentId, 10);
+            if (isNaN(attachmentId)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid attachment ID',
+                });
+                return;
+            }
+
+            await rackService.deleteAttachment(
+                attachmentId,
+                req.user!.userId,
+                req.user!.role
+            );
+
+            const response: ApiResponse = {
+                success: true,
+                message: 'Attachment deleted successfully',
             };
             res.status(200).json(response);
         } catch (error) {
