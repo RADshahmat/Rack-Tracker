@@ -1,11 +1,13 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { requestLogger } from './shared/logger';
 import { errorHandler } from './shared/errorHandler';
 import { bodySanitizer } from './shared/sanitizer';
 import router from './routes';
 import db from './shared/db';
 import helmet from 'helmet';
+import adminRoutes from './routes/admin.routes';
 
 const app: Application = express();
 
@@ -36,15 +38,16 @@ app.use((_req, res, next) => {
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,
+    credentials: true,                               
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(requestLogger);
 app.use(bodySanitizer);
 
 app.use('/api', router);
-
+app.use('/admin', adminRoutes);
 // Health check endpoint
 app.get('/healthz', async (_req: Request, res: Response, next: NextFunction) => {
     try {

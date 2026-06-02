@@ -1,0 +1,44 @@
+# ─── ADMIN — full access ──────────────────────────────────────────────────────
+p, admin, /api/racks,                    GET
+p, admin, /api/racks/:id,                GET
+p, admin, /api/racks/:id/slots,          GET
+p, admin, /api/racks/:id/attachments,    GET
+p, admin, /api/racks,                    POST
+p, admin, /api/racks/:id,                PUT
+p, admin, /api/racks/:id,                DELETE
+p, admin, /api/racks/:id/upload,         POST
+
+p, admin, /api/equipment,               GET
+p, admin, /api/equipment/rack/:rackId,   GET
+p, admin, /api/equipment/:id,            GET
+p, admin, /api/equipment,               POST
+p, admin, /api/equipment/:id,            PUT
+p, admin, /api/equipment/:id,            DELETE
+
+p, admin, /api/warnings,                GET
+p, admin, /admin/restart-cron,          GET
+
+# ─── OPERATOR — no delete ─────────────────────────────────────────────────────
+p, operator, /api/racks,                GET
+p, operator, /api/racks/:id,            GET
+p, operator, /api/racks/:id/slots,      GET
+p, operator, /api/racks/:id/attachments, GET
+p, operator, /api/racks,                POST
+p, operator, /api/racks/:id,            PUT
+p, operator, /api/racks/:id/upload,     POST
+
+p, operator, /api/equipment,            GET
+p, operator, /api/equipment/rack/:rackId, GET
+p, operator, /api/equipment/:id,        GET
+p, operator, /api/equipment,            POST
+p, operator, /api/equipment/:id,        PUT
+
+# ─── VIEWER — read only ───────────────────────────────────────────────────────
+p, viewer, /api/racks,                  GET
+p, viewer, /api/racks/:id,              GET
+p, viewer, /api/racks/:id/slots,        GET
+p, viewer, /api/racks/:id/attachments,  GET
+
+p, viewer, /api/equipment,              GET
+p, viewer, /api/equipment/rack/:rackId, GET
+p, viewer, /api/equipment/:id,          GET
