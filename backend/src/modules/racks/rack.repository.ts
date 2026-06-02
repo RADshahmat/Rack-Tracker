@@ -1,17 +1,20 @@
 import { Pool } from 'pg';
 import db from '../../shared/db';
-import { Rack, CreateRackInput, UpdateRackInput } from './rack.types';
+import { Rack, CreateRackInput, UpdateRackInput, RackAttachment, CreateAttachmentInput } from './rack.types';
 
 export interface IRackRepository {
     findAll(): Promise<Rack[]>;
     findById(id: number): Promise<Rack | null>;
     findByTag(tag: string): Promise<Rack | null>;
-    findOccupiedSlots(rackId: number): Promise<number[]>; 
     create(data: CreateRackInput): Promise<Rack>;
     update(id: number, data: UpdateRackInput): Promise<Rack | null>;
     delete(id: number): Promise<boolean>;
+    findOccupiedSlots(rackId: number): Promise<number[]>;
+    createAttachment(data: CreateAttachmentInput): Promise<RackAttachment>;  
+    findAttachmentsByRackId(rackId: number): Promise<RackAttachment[]>;        
+    findAttachmentById(id: number): Promise<RackAttachment | null>;            
+    deleteAttachment(id: number): Promise<boolean>;                          
 }
-
 class RackRepository implements IRackRepository {
     private pool: Pool;
 
@@ -117,6 +120,54 @@ class RackRepository implements IRackRepository {
 
     async delete(id: number): Promise<boolean> {
         const query = `DELETE FROM racks WHERE id = $1`;
+        const result = await this.pool.query(query, [id]);
+        return (result.rowCount ?? 0) > 0;
+    }
+
+
+    async createAttachment(data: CreateAttachmentInput): Promise<RackAttachment> {
+        const query = `
+        INSERT INTO rack_attachments
+            (rack_id, filename, original_name, file_path, file_size, uploaded_by)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *
+    `;
+        const values = [
+            data.rack_id,
+            data.filename,
+            data.original_name,
+            data.file_path,
+            data.file_size,
+            data.uploaded_by,
+        ];
+        const result = await this.pool.query(query, values);
+        return result.rows[0];
+    }
+
+    async findAttachmentsByRackId(rackId: number): Promise<RackAttachment[]> {
+        const query = `
+        SELECT
+            ra.*,
+            u.username AS uploaded_by_username
+        FROM rack_attachments ra
+        LEFT JOIN users u ON ra.uploaded_by = u.id
+        WHERE ra.rack_id = $1
+        ORDER BY ra.created_at DESC
+    `;
+        const result = await this.pool.query(query, [rackId]);
+        return result.rows;
+    }
+
+    async findAttachmentById(id: number): Promise<RackAttachment | null> {
+        const query = `
+        SELECT * FROM rack_attachments WHERE id = $1
+    `;
+        const result = await this.pool.query(query, [id]);
+        return result.rows[0] || null;
+    }
+
+    async deleteAttachment(id: number): Promise<boolean> {
+        const query = `DELETE FROM rack_attachments WHERE id = $1`;
         const result = await this.pool.query(query, [id]);
         return (result.rowCount ?? 0) > 0;
     }
