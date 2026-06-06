@@ -7,7 +7,7 @@ import { bodySanitizer } from './shared/sanitizer';
 import router from './routes';
 import db from './shared/db';
 import helmet from 'helmet';
-import adminRoutes from './routes/admin.routes';
+
 
 const app: Application = express();
 
@@ -47,7 +47,7 @@ app.use(requestLogger);
 app.use(bodySanitizer);
 
 app.use('/api', router);
-app.use('/admin', adminRoutes);
+
 // Health check endpoint
 app.get('/healthz', async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -74,7 +74,7 @@ app.use((_req: Request, res: Response) => {
     });
 });
 
-// Error handler (must be last)
+// Error handler 
 app.use(errorHandler);
 
 export default app;

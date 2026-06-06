@@ -5,9 +5,9 @@ services:
     image: postgres:16-alpine
     container_name: rack-tracker-db
     environment:
-      POSTGRES_USER: rackuser
-      POSTGRES_PASSWORD: rackpass
-      POSTGRES_DB: racktracker
+      POSTGRES_USER: ${POSTGRES_USER:-rackuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rackpass}
+      POSTGRES_DB: ${POSTGRES_DB:-racktracker}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rackuser -d racktracker"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-rackuser} -d $${POSTGRES_DB:-racktracker}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,10 +29,10 @@ services:
       dockerfile: dockerfile.dev
     container_name: rack-tracker-backend
     environment:
-      NODE_ENV: development
-      PORT: 3000
-      DATABASE_URL: postgresql://rackuser:rackpass@postgres:5432/racktracker
-      CORS_ORIGIN: http://localhost:5173
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://rackuser:rackpass@postgres:5432/racktracker}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
       CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3000:3000"
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile
     container_name: rack-tracker-frontend
     environment:
-      VITE_API_URL: http://localhost:3000
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
     ports:
       - "5173:5173"
     volumes:
@@ -65,6 +65,7 @@ services:
 
 volumes:
   postgres_data:
+  uploads:    
 
 networks:
   rack-network:

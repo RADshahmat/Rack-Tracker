@@ -10,13 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TRIGGER update_users_updated_at
-    BEFORE UPDATE ON users
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-
-CREATE INDEX idx_users_username ON users(username);
-CREATE INDEX idx_users_email ON users(email);
 
 -- Create racks table
 CREATE TABLE IF NOT EXISTS racks (
@@ -41,6 +34,20 @@ CREATE TABLE IF NOT EXISTS equipment (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+
+-- upload attachments table
+CREATE TABLE IF NOT EXISTS rack_attachments (
+    id            SERIAL PRIMARY KEY,
+    rack_id       INT          NOT NULL REFERENCES racks(id) ON DELETE CASCADE,
+    filename      VARCHAR(255) NOT NULL,        -- UUID filename on disk
+    original_name VARCHAR(255) NOT NULL,        -- user's original filename
+    file_path     VARCHAR(500) NOT NULL,        -- full path on disk
+    file_size     INT          NOT NULL,        -- bytes
+    uploaded_by   INT          REFERENCES users(id) ON DELETE SET NULL,
+    created_at    TIMESTAMPTZ  DEFAULT NOW()
+);
+
+
 -- Create trigger function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -49,6 +56,16 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Create triggers for Users Table
+CREATE TRIGGER update_users_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_email ON users(email);
+
 
 -- Create triggers for both tables
 CREATE TRIGGER update_racks_updated_at
@@ -67,18 +84,4 @@ CREATE INDEX idx_racks_created_at ON racks(created_at DESC);
 CREATE INDEX idx_equipment_tag ON equipment(tag);
 CREATE INDEX idx_equipment_rack_id ON equipment(rack_id);
 CREATE INDEX idx_equipment_created_at ON equipment(created_at DESC);
-
-
--- upload attachments table
-CREATE TABLE IF NOT EXISTS rack_attachments (
-    id            SERIAL PRIMARY KEY,
-    rack_id       INT          NOT NULL REFERENCES racks(id) ON DELETE CASCADE,
-    filename      VARCHAR(255) NOT NULL,        -- UUID filename on disk
-    original_name VARCHAR(255) NOT NULL,        -- user's original filename
-    file_path     VARCHAR(500) NOT NULL,        -- full path on disk
-    file_size     INT          NOT NULL,        -- bytes
-    uploaded_by   INT          REFERENCES users(id) ON DELETE SET NULL,
-    created_at    TIMESTAMPTZ  DEFAULT NOW()
-);
-
 CREATE INDEX idx_rack_attachments_rack_id ON rack_attachments(rack_id);

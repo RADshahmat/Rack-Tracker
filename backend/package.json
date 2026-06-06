@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc && mkdir -p dist/casbin && cp src/casbin/model.conf dist/casbin/ && cp src/casbin/policy.csv dist/casbin/",
     "start": "node dist/server.js",
     "test": "echo \"Tests not implemented yet\" && exit 0"
   },
