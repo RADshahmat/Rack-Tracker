@@ -59,15 +59,7 @@ services:
     networks:
       - rack-network
     restart: unless-stopped
-    
-  notification-service:
-    build:
-      context: ./notification-service
-    container_name: rack-tracker-notifications
-    ports:
-      - "3001:3001"
-    networks:
-      - rack-network
+
 
   frontend:
     build:
