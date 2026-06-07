@@ -47,6 +47,21 @@ CREATE TABLE IF NOT EXISTS rack_attachments (
     created_at    TIMESTAMPTZ  DEFAULT NOW()
 );
 
+--warnings table to track issues with racks (e.g. capacity exceeded, equipment malfunction)
+
+CREATE TABLE IF NOT EXISTS warnings (
+    id          SERIAL PRIMARY KEY,
+    rack_id     INT          NOT NULL REFERENCES racks(id) ON DELETE CASCADE,
+    rack_tag    VARCHAR(50)  NOT NULL,
+    message     TEXT         NOT NULL,
+    resolved    BOOLEAN      DEFAULT FALSE,
+    emailed     BOOLEAN      DEFAULT FALSE,      -- stretch: track if email sent
+    created_at  TIMESTAMPTZ  DEFAULT NOW()
+);
+
+CREATE INDEX idx_warnings_rack_id ON warnings(rack_id);
+CREATE INDEX idx_warnings_resolved ON warnings(resolved);
+
 
 -- Create trigger function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

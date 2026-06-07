@@ -1,13 +1,20 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import { initEnforcer } from './casbin/enforcer';
-
-dotenv.config();
+import { scheduler } from './scheduler/cronScheduler';
 
 const PORT = process.env.PORT || 3000;
 
 async function bootstrap() {
+    // 1. Init Casbin
     await initEnforcer();
+
+    // 2. Start cron scheduler
+    scheduler.start();
+
+    // 3. Start server
     app.listen(PORT, () => {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);

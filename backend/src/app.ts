@@ -38,7 +38,7 @@ app.use((_req, res, next) => {
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,                               
+    credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,6 +47,7 @@ app.use(requestLogger);
 app.use(bodySanitizer);
 
 app.use('/api', router);
+//app.use('/uploads', express.static('/backend/uploads'));
 
 // Health check endpoint
 app.get('/healthz', async (_req: Request, res: Response, next: NextFunction) => {
