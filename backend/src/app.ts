@@ -7,7 +7,7 @@ import { bodySanitizer } from './shared/sanitizer';
 import router from './routes';
 import db from './shared/db';
 import helmet from 'helmet';
-import adminRoutes from './routes/admin.routes';
+
 
 const app: Application = express();
 
@@ -38,7 +38,7 @@ app.use((_req, res, next) => {
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,                               
+    credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,7 +47,8 @@ app.use(requestLogger);
 app.use(bodySanitizer);
 
 app.use('/api', router);
-app.use('/admin', adminRoutes);
+//app.use('/uploads', express.static('/backend/uploads'));
+
 // Health check endpoint
 app.get('/healthz', async (_req: Request, res: Response, next: NextFunction) => {
     try {
@@ -74,7 +75,7 @@ app.use((_req: Request, res: Response) => {
     });
 });
 
-// Error handler (must be last)
+// Error handler 
 app.use(errorHandler);
 
 export default app;

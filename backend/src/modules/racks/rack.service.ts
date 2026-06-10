@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import rackRepository, { IRackRepository } from './rack.repository';
 import { Rack, CreateRackInput, UpdateRackInput, RackAttachment } from './rack.types';
 import { AppError } from '../../shared/errorHandler';

@@ -7,6 +7,7 @@ p, admin, /api/racks,                    POST
 p, admin, /api/racks/:id,                PUT
 p, admin, /api/racks/:id,                DELETE
 p, admin, /api/racks/:id/upload,         POST
+p, admin, /api/racks/:id/attachments/:attachmentId, DELETE
 
 p, admin, /api/equipment,               GET
 p, admin, /api/equipment/rack/:rackId,   GET
@@ -15,8 +16,12 @@ p, admin, /api/equipment,               POST
 p, admin, /api/equipment/:id,            PUT
 p, admin, /api/equipment/:id,            DELETE
 
-p, admin, /api/warnings,                GET
-p, admin, /admin/restart-cron,          GET
+p, admin, /api/warnings,            GET
+p, admin, /api/warnings/unresolved, GET
+p, admin, /api/warnings/:id/resolve, PATCH
+
+p, admin, /api/admin/restart-cron,                              GET
+p, admin, /api/admin/cron-status,                               GET
 
 # ─── OPERATOR — no delete ─────────────────────────────────────────────────────
 p, operator, /api/racks,                GET

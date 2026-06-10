@@ -16,9 +16,9 @@ declare global {
 class AuthController {
     async login(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+           // console.log('Login request body:', req.body); // Debug log
             const validated = loginSchema.parse(req.body);
             const { user, token } = await authService.login(validated);
-
             // Set httpOnly cookie — never accessible from JS
             res.cookie('token', token, {
                 httpOnly: true,

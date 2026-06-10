@@ -17,12 +17,14 @@ class AuthService {
         // Same error for wrong username or wrong password
         // prevents username enumeration attack
         if (!user) {
+
             throw new AppError(401, 'Invalid username or password');
         }
 
         const passwordMatch = await bcrypt.compare(data.password, user.password);
+        // console.log('Password match:', passwordMatch); // Debug log
         if (!passwordMatch) {
-            throw new AppError(401, 'Invalid username or password');
+            throw new AppError(401, 'hurrrr Invalid username or password');
         }
 
         const payload: JwtPayload = {

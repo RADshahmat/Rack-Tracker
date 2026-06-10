@@ -8,7 +8,6 @@ export const casbinMiddleware = async (
 ): Promise<void> => {
     const user = req.user;
 
-    // authMiddleware must run before this
     if (!user) {
         res.status(401).json({
             success: false,
@@ -20,13 +19,18 @@ export const casbinMiddleware = async (
     const role = user.role;
     const method = req.method;
 
-    // Normalize path — strip query strings, replace numeric IDs
-    // with :id so it matches the policy pattern
-    // e.g. /api/racks/42/slots → /api/racks/:id/slots
-    const normalizedPath = normalizePath(req.path);
+    // req.path is stripped of prefix — use originalUrl instead
+    // strip query string from originalUrl
+    const rawPath = req.originalUrl.split('?')[0];
+    const normalizedPath = normalizePath(rawPath);
+
+    // 🔍 Temporary debug log — remove after fixing
+    console.log(`[Casbin] role=${role} path=${normalizedPath} method=${method}`);
 
     try {
         const allowed = await checkPermission(role, normalizedPath, method);
+
+        console.log(`[Casbin] allowed=${allowed}`); // 🔍 debug
 
         if (!allowed) {
             res.status(403).json({
@@ -46,23 +50,9 @@ export const casbinMiddleware = async (
     }
 };
 
-/**
- * Normalize Express path to match Casbin policy patterns.
- *
- * Rules:
- *  - Numeric segments → :id          /api/racks/42        → /api/racks/:id
- *  - rackId segment   → :rackId      /api/equipment/rack/5 → /api/equipment/rack/:rackId
- *  - Trailing slash stripped
- *
- * Examples:
- *  /api/racks/1/slots      → /api/racks/:id/slots
- *  /api/racks/1/upload     → /api/racks/:id/upload
- *  /api/equipment/rack/2   → /api/equipment/rack/:rackId
- *  /api/equipment/5        → /api/equipment/:id
- */
 function normalizePath(path: string): string {
     return path
-        .replace(/\/rack\/\d+/g, '/rack/:rackId')   // equipment/rack/5 → equipment/rack/:rackId
+        .replace(/\/rack\/\d+/g, '/rack/:rackId')   // /equipment/rack/5 → /equipment/rack/:rackId
         .replace(/\/\d+/g, '/:id')                  // /42 → /:id
         .replace(/\/$/, '');                         // strip trailing slash
 }
