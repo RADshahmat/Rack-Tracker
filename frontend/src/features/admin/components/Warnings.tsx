@@ -49,7 +49,7 @@ export function Warnings() {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+                  <div className="overflow-x-auto overflow-y-auto max-h-450px border rounded-md relative">
                 <Table>
                   <TableHeader>
                     <TableRow>
