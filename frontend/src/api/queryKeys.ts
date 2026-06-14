@@ -26,4 +26,16 @@ export const queryKeys = {
     detail: (id: number) => [...queryKeys.equipment.details(), id] as const,
     byRack: (rackId: number) => [...queryKeys.equipment.all, 'by-rack', rackId] as const,
   },
+
+  // Admin
+  admin: {
+    all: ['admin'] as const,
+    cron: () => [...queryKeys.admin.all, 'cron'] as const,
+    cronStatus: () => [...queryKeys.admin.cron(), 'status'] as const,
+    warnings: () => [...queryKeys.admin.all, 'warnings'] as const,
+    warningsList: (resolved?: boolean) =>
+      resolved === undefined
+        ? [...queryKeys.admin.warnings(), 'list'] as const
+        : [...queryKeys.admin.warnings(), 'list', { resolved }] as const,
+  },
 } as const;
