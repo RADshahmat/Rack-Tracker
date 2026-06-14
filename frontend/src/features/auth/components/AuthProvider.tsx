@@ -1,6 +1,6 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User } from '@/types/index';
+import type { User } from '@/types/index';
 import { authApi } from '../api/index';
 import { AuthContext, createAuthValue } from '../hooks/useAuth';
 

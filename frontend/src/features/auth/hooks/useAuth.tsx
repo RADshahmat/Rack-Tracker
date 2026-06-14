@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthState } from '@/types/index';
-import { authApi } from '../api/index';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useContext} from 'react';
+import type { User, AuthState } from '@/types/index';
+
 
 interface AuthContextType extends AuthState {
   login: (username: string, password: string) => Promise<void>;
