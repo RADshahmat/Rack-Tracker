@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface FormModalProps {
   isOpen: boolean;

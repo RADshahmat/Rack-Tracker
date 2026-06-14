@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useTheme } from '@/components/shared/ThemeProvider';
-import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut} from 'lucide-react';
+import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut, Settings, Clock } from 'lucide-react';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface SidebarProps {
   isExpanded: boolean;
@@ -9,11 +10,14 @@ interface SidebarProps {
 export function Sidebar({ isExpanded }: SidebarProps) {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/racks', label: 'Racks', icon: Server },
     { path: '/equipment', label: 'Equipment', icon: Cpu },
+    ...(isAdmin ? [{ path: '/admin/scheduler', label: 'Scheduler', icon: Clock }] : []),
   ];
 
   return (
@@ -70,6 +74,7 @@ export function Sidebar({ isExpanded }: SidebarProps) {
 
       {/* Footer */}
       <div className="flex flex-col space-y-2 pt-4 px-2 border-t border-gray-200 dark:border-dark-border">
+        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className={`flex items-center gap-3 h-10 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border transition-all ${isExpanded ? '' : 'justify-center'}`}
@@ -78,6 +83,8 @@ export function Sidebar({ isExpanded }: SidebarProps) {
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           {isExpanded && <span className="text-sm">{theme === 'dark' ? 'Light' : 'Dark'}</span>}
         </button>
+
+        {/* Logout */}
         <button
           className={`flex items-center gap-3 h-10 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border transition-all ${isExpanded ? '' : 'justify-center'}`}
           title="Logout"
