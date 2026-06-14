@@ -44,7 +44,7 @@ function AppContentWrapper() {
               <Route path="/racks" element={<RacksPage />} />
               <Route path="/equipment" element={<EquipmentPage />} />
 
-              {/* Admin-only routes */}
+              {/* Admin-only routes - role based routes*/}
               <Route
                 path="/admin/scheduler"
                 element={
