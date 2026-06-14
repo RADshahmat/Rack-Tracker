@@ -3,7 +3,7 @@ import { EmptyRack } from '../modules/warnings/warning.types';
 
 const createTransport = () => {
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'localhost',
+        host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT || '1025'),
         secure: false,          // MailHog doesn't use TLS
         ignoreTLS: true,
@@ -23,8 +23,8 @@ export const sendWarningEmail = async (emptyRacks: EmptyRack[]): Promise<void> =
         .join('\n');
 
     await transport.sendMail({
-        from: process.env.SMTP_FROM || 'rack-tracker@rack.local',
-        to: process.env.SMTP_TO || 'admin@rack.local',
+        from: process.env.SMTP_FROM ,
+        to: process.env.SMTP_TO,
         subject: `[Rack Tracker] ${emptyRacks.length} empty rack(s) detected`,
         text: `
 The following racks have no equipment assigned:
