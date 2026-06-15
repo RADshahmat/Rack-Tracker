@@ -3,6 +3,7 @@ import type { Equipment } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { RoleGuard } from '@/features/auth/components/RoleGuard';
 
 interface EquipmentTableProps {
   equipment: Equipment[];
@@ -92,17 +93,20 @@ export function EquipmentTable({
               <TableCell className="text-sm text-gray-600 dark:text-gray-400">{eq.slot_position || '-'}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 hover:text-red-600 dark:hover:text-red-500"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(eq.id);
-                    }}
-                  >
-                    <Trash2 size={14} />
-                  </Button>
+                  {/* STRICTLY ADMIN ONLY */}
+                  <RoleGuard minRole="admin">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 hover:text-red-600 dark:hover:text-red-500"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(eq.id);
+                      }}
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  </RoleGuard>
                 </div>
               </TableCell>
             </TableRow>

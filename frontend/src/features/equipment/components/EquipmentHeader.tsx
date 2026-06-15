@@ -1,6 +1,7 @@
 import { Search, Plus, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { RoleGuard } from '@/features/auth/components/RoleGuard';
 import { useState } from 'react';
 
 interface EquipmentHeaderProps {
@@ -81,10 +82,13 @@ export function EquipmentHeader({
           </div>
        
 
-        <Button onClick={onCreateNew} className="gap-2 whitespace-nowrap">
-          <Plus size={16} />
-          Add New Equipment
-        </Button>
+        {/* OPERATOR OR HIGHER CAN CREATE */}
+        <RoleGuard minRole="operator">
+          <Button onClick={onCreateNew} className="gap-2 whitespace-nowrap">
+            <Plus size={16} />
+            Add New Equipment
+          </Button>
+        </RoleGuard>
       </div>
     </div>
   );

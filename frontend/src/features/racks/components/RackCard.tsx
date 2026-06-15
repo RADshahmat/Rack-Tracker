@@ -1,5 +1,6 @@
 import type { Rack } from '@/types';
 import { Edit, Trash2 } from 'lucide-react';
+import { RoleGuard } from '@/features/auth/components/RoleGuard';
 
 interface RackCardProps {
   rack: Rack;
@@ -37,20 +38,27 @@ export function RackCard({ rack, isSelected, onClick, onEdit, onDelete }: RackCa
         />
         {/* Icons overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-          <button
-            onClick={handleEditClick}
-            className="p-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors"
-            title="Edit rack"
-          >
-            <Edit size={18} />
-          </button>
-          <button
-            onClick={handleDeleteClick}
-            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-            title="Delete rack"
-          >
-            <Trash2 size={18} />
-          </button>
+          {/* OPERATOR OR HIGHER CAN EDIT */}
+          <RoleGuard minRole="operator">
+            <button
+              onClick={handleEditClick}
+              className="p-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors"
+              title="Edit rack"
+            >
+              <Edit size={18} />
+            </button>
+          </RoleGuard>
+
+          {/* STRICTLY ADMIN ONLY */}
+          <RoleGuard minRole="admin">
+            <button
+              onClick={handleDeleteClick}
+              className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+              title="Delete rack"
+            >
+              <Trash2 size={18} />
+            </button>
+          </RoleGuard>
         </div>
       </div>
 

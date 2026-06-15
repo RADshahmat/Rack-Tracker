@@ -1,6 +1,7 @@
 import { X, Edit, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useEquipmentById } from '../hooks/useEquipment';
+import { RoleGuard } from '@/features/auth/components/RoleGuard';
 import { EditEquipmentModal } from './EditEquipmentModal';
 import { PlaceInRackModal } from './PlaceInRackModal';
 
@@ -119,20 +120,27 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
 
         {/* Actions */}
         <div className="p-4 border-t border-gray-200 dark:border-dark-border space-y-2 shrink-0">
-          <button
-            onClick={() => setShowEditModal(true)}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-dark-border hover:bg-gray-200 dark:hover:bg-dark-border/80 text-gray-900 dark:text-white text-xs rounded transition-colors"
-          >
-            <Edit size={14} />
-            Edit
-          </button>
-          {!equipment.rack_id && (
+          {/* OPERATOR OR HIGHER CAN EDIT */}
+          <RoleGuard minRole="operator">
             <button
-              onClick={() => setShowPlaceInRackModal(true)}
-              className="w-full px-3 py-2 bg-sky-600 hover:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-700 text-white text-xs rounded transition-colors font-semibold"
+              onClick={() => setShowEditModal(true)}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 dark:bg-dark-border hover:bg-gray-200 dark:hover:bg-dark-border/80 text-gray-900 dark:text-white text-xs rounded transition-colors"
             >
-              Place in Rack
+              <Edit size={14} />
+              Edit
             </button>
+          </RoleGuard>
+
+          {/* OPERATOR OR HIGHER CAN PLACE IN RACK */}
+          {!equipment.rack_id && (
+            <RoleGuard minRole="operator">
+              <button
+                onClick={() => setShowPlaceInRackModal(true)}
+                className="w-full px-3 py-2 bg-sky-600 hover:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-700 text-white text-xs rounded transition-colors font-semibold"
+              >
+                Place in Rack
+              </button>
+            </RoleGuard>
           )}
         </div>
       </div>

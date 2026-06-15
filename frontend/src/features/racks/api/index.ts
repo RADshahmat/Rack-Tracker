@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client';
-import type { Rack, ApiResponse } from '@/types/index';
+import type { Rack, ApiResponse, Attachment } from '@/types/index';
 import type { RackFormInput } from '@/types/schemas';
 
 export const racksApi = {
@@ -17,4 +17,17 @@ export const racksApi = {
 
   delete: (id: number) =>
     apiClient.delete<ApiResponse<void>>(`/racks/${id}`),
+
+  // Attachment methods
+  uploadSpec: (rackId: number, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post<ApiResponse<Attachment>>(`/racks/${rackId}/upload`, formData);
+  },
+
+  getAttachments: (rackId: number) =>
+    apiClient.get<ApiResponse<Attachment[]>>(`/racks/${rackId}/attachments`),
+
+  deleteAttachment: (rackId: number, attachmentId: number) =>
+    apiClient.delete<ApiResponse<void>>(`/racks/${rackId}/attachments/${attachmentId}`),
 };

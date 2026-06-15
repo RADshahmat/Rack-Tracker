@@ -8,6 +8,17 @@ export interface Rack {
   updated_at: string;
 }
 
+export interface Attachment {
+  id: number;
+  rack_id: number;
+  filename: string;
+  original_name: string;
+  file_size: number;
+  uploaded_by: number;
+  uploaded_by_username?: string;
+  created_at: string;
+}
+
 export interface Equipment {
   id: number;
   tag: string;
@@ -37,4 +48,19 @@ export interface ApiResponse<T = unknown> {
   data?: T;
   pagination?: PaginationMeta;
   errors?: Array<{ field?: string; message: string }>;
+}
+
+export type UserRole = 'admin' | 'operator' | 'viewer';
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
 }

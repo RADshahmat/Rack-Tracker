@@ -5,24 +5,20 @@
         "lib": [
             "ES2022"
         ],
-        "outDir": "./dist",
-        "rootDir": "./src",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-       // "moduleResolution": "node",
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true
+        "composite": true
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
+    "files": [], 
+    "references": [
+        {
+            "path": "./tsconfig.app.json"
+        }, // Production App Config
+        {
+            "path": "./tsconfig.test.json"
+        } // Testing App Config
     ]
 }
