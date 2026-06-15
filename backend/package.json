@@ -7,7 +7,9 @@
     "dev": "nodemon",
     "build": "tsc && mkdir -p dist/casbin && cp src/casbin/model.conf dist/casbin/ && cp src/casbin/policy.csv dist/casbin/",
     "start": "node dist/server.js",
-    "test": "echo \"Tests not implemented yet\" && exit 0"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "rack",
@@ -38,14 +40,19 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.14.0",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.16",
     "@types/pg": "^8.11.6",
+    "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.14",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   }
