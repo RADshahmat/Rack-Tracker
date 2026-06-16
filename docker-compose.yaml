@@ -23,15 +23,6 @@ services:
     networks:
       - rack-network
 
-  mailhog:
-      image: mailhog/mailhog
-      container_name: rack-tracker-mailhog
-      ports:
-          - "1025:1025"       # SMTP
-          - "8025:8025"       # Web UI → http://localhost:8025
-      networks:
-          - rack-network
-
   backend:
     build:
       context: ./backend
@@ -47,6 +38,9 @@ services:
       SMTP_TO: ${SMTP_TO:-admin@rack.local}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
       CHOKIDAR_USEPOLLING: "true"
+      JWT_SECRET: ${JWT_SECRET:-supersecretjwtsecretchangethisinproduction}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      PROMETHEUS_URL: ${PROMETHEUS_URL:-http://prometheus:9090}
     ports:
       - "3000:3000"
     volumes:
@@ -60,27 +54,90 @@ services:
       - rack-network
     restart: unless-stopped
 
-
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: rack-tracker-frontend
     environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend/src:/app/src
     depends_on:
       - backend
     networks:
       - rack-network
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rack-tracker-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'          # enables POST /-/reload
+      - '--web.enable-admin-api'
+    depends_on:
+      - backend
+    networks:
+      - rack-network
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: rack-tracker-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager_data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    depends_on:
+      - backend
+    networks:
+      - rack-network
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: rack-tracker-node-exporter
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro
+    networks:
+      - rack-network
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: rack-tracker-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - rack-network
+
+
+
 volumes:
   postgres_data:
-  uploads:    
+  uploads:
+  prometheus_data:
+  alertmanager_data:
+
 
 networks:
   rack-network:
