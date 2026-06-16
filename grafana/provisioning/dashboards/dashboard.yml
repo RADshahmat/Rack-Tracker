@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: rack-tracker
+    orgId: 1
+    folder: Rack Tracker
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    options:
+      path: /etc/grafana/provisioning/dashboards
