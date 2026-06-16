@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import authRepository, { IAuthRepository } from './auth.repository';
 import { PublicUser, JwtPayload, LoginInput } from './auth.types';
 import { AppError } from '../../shared/errorHandler';
+import { authLoginTotal } from '../../metrics/registry';
 
 class AuthService {
     private repository: IAuthRepository;
@@ -47,7 +48,7 @@ class AuthService {
             email: user.email,
             role: user.role,
         };
-
+        authLoginTotal.inc({ status: 'success' });
         return { user: publicUser, token };
     }
 

@@ -3,6 +3,7 @@ import rackRepository from '../racks/rack.repository';
 import { Equipment, CreateEquipmentInput, UpdateEquipmentInput } from './equipment.types';
 import { AppError } from '../../shared/errorHandler';
 import { PaginatedResult } from '../../shared/types';
+import { equipmentCreatedTotal } from '../../metrics/registry';
 
 class EquipmentService {
   private repository: IEquipmentRepository;
@@ -41,8 +42,12 @@ class EquipmentService {
         ]);
       }
     }
+    const equipment = await this.repository.create(data);
 
-    return await this.repository.create(data);
+    // Increment counter
+    equipmentCreatedTotal.inc();
+
+    return equipment;
   }
 
   async updateEquipment(id: number, data: UpdateEquipmentInput): Promise<Equipment> {

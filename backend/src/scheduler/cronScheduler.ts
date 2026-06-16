@@ -1,5 +1,6 @@
 import cron, { ScheduledTask } from 'node-cron';
 import warningRepository from '../modules/warnings/warning.repository';
+import { warningsCreatedTotal } from '../metrics/registry';
 import { sendWarningEmail } from './mailer';
 import { EmptyRack } from '../modules/warnings/warning.types';
 
@@ -88,7 +89,7 @@ class CronScheduler {
                     rack_tag: rack.tag,
                     message: `Rack ${rack.tag} (${rack.name}) has no equipment assigned`,
                 });
-
+                warningsCreatedTotal.inc(); 
                 console.log(`[Scheduler] Warning created for rack ${rack.tag} — ID: ${warning.id}`);
                 newlyWarned.push(rack);
             }

@@ -2,6 +2,7 @@ import fs from 'fs';
 import rackRepository, { IRackRepository } from './rack.repository';
 import { Rack, CreateRackInput, UpdateRackInput, RackAttachment } from './rack.types';
 import { AppError } from '../../shared/errorHandler';
+import { racksCreatedTotal } from '../../metrics/registry';
 
 class RackService {
     private repository: IRackRepository;
@@ -57,8 +58,12 @@ class RackService {
                 { field: 'tag', message: `A rack with tag "${data.tag}" already exists` },
             ]);
         }
+        const rack = await this.repository.create(data);
 
-        return await this.repository.create(data);
+        // Increment counter after successful creation
+        racksCreatedTotal.inc();
+
+        return rack;
     }
 
     async updateRack(id: number, data: UpdateRackInput): Promise<Rack> {
