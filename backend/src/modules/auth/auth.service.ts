@@ -18,13 +18,14 @@ class AuthService {
         // Same error for wrong username or wrong password
         // prevents username enumeration attack
         if (!user) {
-
+            authLoginTotal.inc({ status: 'failure' });
             throw new AppError(401, 'Invalid username or password');
         }
 
         const passwordMatch = await bcrypt.compare(data.password, user.password);
         // console.log('Password match:', passwordMatch); // Debug log
         if (!passwordMatch) {
+            authLoginTotal.inc({ status: 'failure' });
             throw new AppError(401, 'hurrrr Invalid username or password');
         }
 

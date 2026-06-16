@@ -130,6 +130,24 @@ services:
     networks:
       - rack-network
 
+  grafana:
+      image: grafana/grafana:latest
+      container_name: rack-tracker-grafana
+      ports:
+        - "3001:3000"
+      environment:
+        GF_SECURITY_ADMIN_USER: admin
+        GF_SECURITY_ADMIN_PASSWORD: admin
+        GF_USERS_ALLOW_SIGN_UP: false
+      volumes:
+        - grafana_data:/var/lib/grafana
+        - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+        - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      depends_on:
+        - prometheus
+      networks:
+        - rack-network
+      restart: unless-stopped
 
 
 volumes:
@@ -137,7 +155,7 @@ volumes:
   uploads:
   prometheus_data:
   alertmanager_data:
-
+  grafana_data:
 
 networks:
   rack-network:

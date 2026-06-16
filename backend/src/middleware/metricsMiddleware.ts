@@ -27,6 +27,7 @@ export const metricsMiddleware = (
 
         httpRequestsTotal.inc({ method, route, status_code: statusCode });
         httpRequestDurationSeconds.observe({ method, route }, duration);
+        console.log(`[Metrics] ${method} ${route} - ${statusCode} (${duration.toFixed(3)}s)`);
     });
 
     next();
