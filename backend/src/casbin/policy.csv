@@ -23,6 +23,10 @@ p, admin, /api/warnings/:id/resolve, PATCH
 p, admin, /api/admin/restart-cron,                              GET
 p, admin, /api/admin/cron-status,                               GET
 
+p, admin, /api/prometheus/reload,  POST
+p, admin, /api/prometheus/config,  GET
+p, admin, /api/prometheus/status,  GET
+
 # ─── OPERATOR — no delete ─────────────────────────────────────────────────────
 p, operator, /api/racks,                GET
 p, operator, /api/racks/:id,            GET

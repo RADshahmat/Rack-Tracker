@@ -41,12 +41,14 @@ services:
       JWT_SECRET: ${JWT_SECRET:-supersecretjwtsecretchangethisinproduction}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       PROMETHEUS_URL: ${PROMETHEUS_URL:-http://prometheus:9090}
+      PROMETHEUS_CONFIG_PATH: ${PROMETHEUS_CONFIG_PATH:-/app/prometheus/prometheus.yml}
     ports:
       - "3000:3000"
     volumes:
       - ./backend:/app
       - /app/node_modules
       - ./backend/uploads:/app/uploads 
+      - ./backend/prometheus:/app/prometheus 
     depends_on:
       postgres:
         condition: service_healthy
