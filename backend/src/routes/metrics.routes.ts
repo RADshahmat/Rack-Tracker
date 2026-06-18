@@ -3,9 +3,7 @@ import registry from '../metrics/registry';
 
 const router = Router();
 
-// Public — Prometheus scrapes this
-// No auth — Prometheus has no credentials in this setup
-// ⚠️ Do NOT mount under /api — keep at /metrics
+
 router.get('/', async (_req: Request, res: Response) => {
     try {
         const metrics = await registry.metrics();

@@ -27,8 +27,6 @@ export interface PrometheusConfig {
     scrape_configs: ScrapeJob[];
 }
 
-// Path where generated prometheus.yml is written
-// Mounted as volume in docker-compose
 const CONFIG_PATH = process.env.PROMETHEUS_CONFIG_PATH ||
     path.join(process.cwd(), 'prometheus', 'prometheus.yml');
 
@@ -88,8 +86,7 @@ function buildDynamicJobs(
     const jobs: ScrapeJob[] = [];
 
     for (const [rackTag, deviceTags] of rackMap) {
-        // Sanitize rack tag for job_name
-        // RACK-A1 → rack_a1
+
         const jobName = `rack_device_${rackTag.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
 
         jobs.push({
@@ -98,9 +95,8 @@ function buildDynamicJobs(
             scrape_interval: '30s',
             static_configs: [
                 {
-                    // In real infra these would be actual device IPs
-                    // Here we simulate with job metadata
-                    targets: deviceTags.map((tag) => `${tag.toLowerCase().replace(/[^a-z0-9]/g, '-')}:9100`),
+
+                    targets: ['backend:3000'],
                     labels: {
                         rack: rackTag,
                         environment: process.env.NODE_ENV || 'development',
