@@ -76,8 +76,7 @@ class CronScheduler {
             const newlyWarned: EmptyRack[] = [];
 
             for (const rack of emptyRacks) {
-                // Skip if a warning already exists for this rack
-                // in the last 10 minutes — prevents spam
+                // Skip if a warning already exists for this rack in the last 10 minutes — prevents spam
                 const recent = await warningRepository.findRecentWarningByRackId(rack.id, 10);
                 if (recent) {
                     console.log(`[Scheduler] Skipping ${rack.tag} — recent warning exists`);
@@ -94,7 +93,7 @@ class CronScheduler {
                 newlyWarned.push(rack);
             }
 
-            // Stretch: send email for newly warned racks
+            // send email for newly warned racks
             if (newlyWarned.length > 0) {
                 await sendWarningEmail(newlyWarned);
             }
@@ -104,5 +103,7 @@ class CronScheduler {
     }
 }
 
+//for test
+export { CronScheduler }; 
 // Export a single instance — used across the app
 export const scheduler = new CronScheduler('*/5 * * * *');
