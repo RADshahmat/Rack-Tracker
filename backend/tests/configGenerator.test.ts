@@ -12,7 +12,7 @@ describe('ConfigGenerator', () => {
             scrape_interval: '30s',
             static_configs: [
                 {
-                    targets: ['srv-001:9100', 'srv-002:9100'],
+                    targets: ['backend:3000'],
                     labels: { rack: 'RACK-A1', environment: 'test' },
                 },
             ],
