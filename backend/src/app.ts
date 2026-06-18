@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import { requestLogger } from './shared/logger';
 import { errorHandler } from './shared/errorHandler';
 import { bodySanitizer } from './shared/sanitizer';
+import { metricsMiddleware } from './middleware/metricsMiddleware';
+import metricsRouter from './routes/metrics.routes';
 import router from './routes';
 import db from './shared/db';
 import helmet from 'helmet';
@@ -45,7 +47,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
 app.use(bodySanitizer);
+app.use(metricsMiddleware); 
 
+app.use('/metrics', metricsRouter);
 app.use('/api', router);
 //app.use('/uploads', express.static('/backend/uploads'));
 

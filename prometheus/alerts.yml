@@ -1,0 +1,52 @@
+groups:
+  - name: rack-tracker-alerts
+    interval: 30s
+    rules:
+
+      # Fires when no racks have been created in 10 minutes
+      # For testing: change 10m to 1m to see it fire faster
+      - alert: RacksCreationStalled
+        expr: increase(racks_created_total[10m]) == 0
+        for: 10m
+        labels:
+          severity: warning
+          service: rack-tracker
+        annotations:
+          summary: "No racks created in the last 10 minutes"
+          description: "racks_created_total has not increased in the past 10 minutes. This may indicate the API is unhealthy."
+
+      # Fires when backend is unreachable (scrape fails)
+      - alert: BackendDown
+        expr: up{job="rack-tracker-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: rack-tracker
+        annotations:
+          summary: "Rack Tracker backend is down"
+          description: "Prometheus cannot scrape the backend /metrics endpoint."
+
+      # Fires when high error rate detected (>10% 5xx responses)
+      - alert: HighErrorRate
+        expr: |
+          rate(http_requests_total{status_code=~"5.."}[5m])
+          /
+          rate(http_requests_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: rack-tracker
+        annotations:
+          summary: "High HTTP error rate detected"
+          description: "More than 10% of HTTP requests are returning 5xx status codes."
+
+      # Fires on high login failure rate (possible brute force)
+      - alert: HighLoginFailureRate
+        expr: rate(auth_login_total{status="failure"}[5m]) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          service: rack-tracker
+        annotations:
+          summary: "High login failure rate"
+          description: "More than 0.5 failed logins per second — possible brute force attack."
