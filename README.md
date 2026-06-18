@@ -12,13 +12,16 @@
 - Docker Compose >= 2.20
 
 ```bash
-# 1. Clone
-git clone <repository-url>
-cd rack-tracker
+# 1. Clone & navigate to the directory
+git clone https://github.com/RADshahmat/Rack-Tracker.git
+cd Rack-Tracker
 
-# 2. Environment setup
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+# Switch to the metrics version branch
+git switch v3-metrics
+
+# 2. Copy the .env.example and into .env
+cp .env.example .env
+
 
 # 3. Start everything
 docker compose up
@@ -165,7 +168,7 @@ Prometheus (scrapes /metrics every 15s)
   → evaluates alerts.yml → AlertManager → webhook → backend logs to stdout
 
 Backend Event Emitter (rack/equipment changed)
-  → debounced 3s → configGenerator → prometheus.yml → POST /-/reload
+  → hit prometheus reload endpoint → configGenerator → prometheus.yml → POST /-/reload
 ```
 
 **Hard rules:**
