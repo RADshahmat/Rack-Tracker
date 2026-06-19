@@ -1,6 +1,6 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useTheme } from '@/components/shared/ThemeProvider';
-import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut, Settings, Clock } from 'lucide-react';
+import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut, LucideMessageSquareWarning, Clock } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface SidebarProps {
@@ -17,7 +17,10 @@ export function Sidebar({ isExpanded }: SidebarProps) {
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/racks', label: 'Racks', icon: Server },
     { path: '/equipment', label: 'Equipment', icon: Cpu },
-    ...(isAdmin ? [{ path: '/admin/scheduler', label: 'Scheduler', icon: Clock }] : []),
+    ...(isAdmin ? [
+      { path: '/admin/scheduler', label: 'Scheduler', icon: Clock },
+      { path: '/admin/warnings', label: 'Warnings', icon: LucideMessageSquareWarning },
+    ] : []),
   ];
 
   return (
