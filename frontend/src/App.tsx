@@ -6,7 +6,7 @@ import { AuthProvider } from '@/features/auth/components/AuthProvider';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Dashboard } from '@/features/racks/pages/Dashboard';
+import { Dashboard } from '@/features/dashboard/pages/Dashboard';
 import { RacksPage } from '@/features/racks/pages/RacksPage';
 import { EquipmentPage } from '@/features/equipment/pages/EquipmentPage';
 import { SchedulerPage } from '@/features/admin/pages/SchedulerPage';

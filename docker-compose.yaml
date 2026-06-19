@@ -65,6 +65,8 @@ services:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
     depends_on:
       - backend
     networks:
