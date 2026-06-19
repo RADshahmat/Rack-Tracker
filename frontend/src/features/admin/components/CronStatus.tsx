@@ -1,4 +1,4 @@
-import { Loader2, RefreshCw, Clock, CheckCircle2, AlertCircle, HelpCircle, Terminal } from 'lucide-react';
+import { Loader2, RefreshCw, Clock, HelpCircle, Terminal } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -177,7 +177,7 @@ export function CronStatus() {
             >
               {isRestarting ? (
                 <>
-                  <Loader2 size={12} className="animate-spin stroke-[3]" />
+                  <Loader2 size={12} className="animate-spin" />
                   Rebuilding Task Pipeline...
                 </>
               ) : (

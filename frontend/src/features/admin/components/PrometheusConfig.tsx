@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader2, RefreshCw, Eye, EyeOff, Activity, FileCode, CheckCircle2, AlertTriangle, Terminal } from 'lucide-react';
+import { Loader2, RefreshCw, Eye, EyeOff, Activity, FileCode, AlertTriangle, Terminal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -116,12 +116,12 @@ export function PrometheusConfig() {
                             onClick={handleReload}
                             disabled={isReloading || !healthy}
                             size="sm"
-                            className="gap-2 h-9 font-semibold text-xs text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-40 disabled:pointer-events-none shadow-md shadow-indigo-500/10 transition-all active:scale-[0.98]"
+                            className="gap-2 h-9 font-semibold text-xs text-white bg-linear-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:opacity-40 disabled:pointer-events-none shadow-md shadow-indigo-500/10 transition-all active:scale-[0.98]"
                         >
                             {isReloading ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin stroke-[3]" />
+                                <Loader2 className="h-3.5 w-3.5 animate-spin " />
                             ) : (
-                                <RefreshCw className="h-3.5 w-3.5 stroke-[3]" />
+                                <RefreshCw className="h-3.5 w-3.5 " />
                             )}
                             Recompile & Hot-Reload
                         </Button>
