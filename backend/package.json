@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc && mkdir -p dist/casbin && cp src/casbin/model.conf dist/casbin/ && cp src/casbin/policy.csv dist/casbin/",
+    "build": "tsc -p tsconfig.app.json",
     "start": "node dist/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
