@@ -38,4 +38,13 @@ export const queryKeys = {
         ? [...queryKeys.admin.warnings(), 'list'] as const
         : [...queryKeys.admin.warnings(), 'list', { resolved }] as const,
   },
+
+  // Prometheus / Metrics 
+  prometheus: {
+    all: ['prometheus'] as const,
+    status: () => [...queryKeys.prometheus.all, 'status'] as const,
+    config: () => [...queryKeys.prometheus.all, 'config'] as const,
+    query: (promql: string, range: boolean) =>
+      [...queryKeys.prometheus.all, 'query', { promql, range }] as const,
+  },
 } as const;

@@ -1,11 +1,11 @@
 import { CronStatus } from '../components/CronStatus';
-import { Warnings } from '../components/Warnings';
+import { PrometheusConfig } from '../components/PrometheusConfig';
 
 export function SchedulerPage() {
   return (
-    <div className="space-y-6">
+    <div className="flex-1 overflow-auto">
       <CronStatus />
-      <Warnings />
+      <PrometheusConfig />
     </div>
   );
 }

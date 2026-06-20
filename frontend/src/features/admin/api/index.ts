@@ -16,6 +16,23 @@ export interface Warning {
   createdAt: string;
 }
 
+interface PrometheusStatus {
+  url: string;
+  healthy: boolean;
+}
+
+interface PrometheusConfigPreview {
+  jobCount: number;
+  dynamicJobCount: number;
+  yaml: string;
+}
+
+interface PrometheusReloadResult {
+  jobCount: number;
+  dynamicJobCount: number;
+  configPath: string;
+}
+
 export const adminApi = {
   // Cron endpoints
   getCronStatus: () =>
@@ -37,4 +54,15 @@ export const adminApi = {
 
   resolveWarning: (id: number) =>
     apiClient.patch<ApiResponse<void>>(`/warnings/${id}/resolve`),
+
+  
+  // prometheus config endpoints
+  getPrometheusStatus: () =>
+    apiClient.get<ApiResponse<PrometheusStatus>>('/prometheus/status'),
+
+  getPrometheusConfig: () =>
+    apiClient.get<ApiResponse<PrometheusConfigPreview>>('/prometheus/config'),
+
+  reloadPrometheusConfig: () =>
+    apiClient.post<ApiResponse<PrometheusReloadResult>>('/prometheus/reload'),
 };

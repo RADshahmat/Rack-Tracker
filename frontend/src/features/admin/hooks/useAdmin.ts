@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminApi, type CronStatus, type Warning } from '../api/index';
+import { adminApi } from '../api/index';
 import { queryKeys } from '@/api/queryKeys';
 import { toast } from 'sonner';
 
@@ -17,11 +17,7 @@ export function useRestartCron() {
   return useMutation({
     mutationFn: (expression: string | undefined) => adminApi.restartCron(expression),
     onSuccess: () => {
-      toast.success('Cron scheduler restarted successfully');
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.cronStatus() });
-    },
-    onError: (error: any) => {
-      toast.error(error?.message || 'Failed to restart cron scheduler');
     },
   });
 }
