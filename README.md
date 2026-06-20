@@ -140,7 +140,7 @@ rack-tracker/
 │   └── provisioning/
 │       ├── dashboards/
 │       └── datasources/
-├── db/
+├── database/
 │   ├── 01-schema.sql
 │   ├── 02-seed.sql
 │   └── 03-users.sql

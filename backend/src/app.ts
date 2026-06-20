@@ -12,7 +12,7 @@ import helmet from 'helmet';
 
 
 const app: Application = express();
-
+app.set('trust proxy', 1);
 // Middleware
 app.use(
     helmet({
