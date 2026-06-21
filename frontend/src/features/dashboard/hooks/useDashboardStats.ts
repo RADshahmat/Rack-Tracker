@@ -1,43 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/api/client';
+import { useWarnings } from '@/features/admin/hooks/useAdmin';
 import { queryKeys } from '@/api/queryKeys';
-import type { ApiResponse, Rack, Equipment } from '@/types';
+import { prometheusApi } from '../api';
 
-interface Warning {
-  id: number;
-  resolved: boolean;
-}
+
+export const usePromQuery = (
+  promql: string,
+  range: boolean = false,
+  options?: { refetchInterval?: number; enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: queryKeys.prometheus.query(promql, range),
+    queryFn: () => prometheusApi.query(promql, range),
+    refetchInterval: options?.refetchInterval ?? 15_000,
+    enabled: options?.enabled ?? true,
+    retry: false,
+  });
+};
+
 
 export function useDashboardStats() {
-  const racksQuery = useQuery({
-    queryKey: queryKeys.racks.list(),
-    queryFn: () => apiClient.get<ApiResponse<Rack[]>>('/racks'),
-  });
-
-  const equipmentQuery = useQuery({
-    queryKey: queryKeys.equipment.list(1, 1000),
-    queryFn: () => apiClient.get<ApiResponse<Equipment[]>>('/equipment', {
-      params: { page: 1, limit: 1000 },
-    }),
-  });
-
-  const warningsQuery = useQuery({
-    queryKey: queryKeys.admin.warningsList(),
-    queryFn: () => apiClient.get<ApiResponse<Warning[]>>('/warnings'),
-  });
-
-  const totalRacks = racksQuery.data?.data?.length ?? 0;
-  const totalEquipment = equipmentQuery.data?.data?.length ?? 0;
+  const racksCreated = usePromQuery('racks_created_total');
+  const equipmentCreated = usePromQuery('equipment_created_total');
+  const httpRequests = usePromQuery('http_requests_total');
+  const warningsQuery = useWarnings();
   const allWarnings = warningsQuery.data?.data ?? [];
   const unresolvedWarnings = allWarnings.filter((w) => !w.resolved).length;
-  const criticalAlerts = unresolvedWarnings; // adjust if you add severity later
+
+  //Helper function to parse Prometheus instant vector results securely
+  const parsePromValue = (queryResult: any): number => {
+    const resultElement = queryResult?.data?.result?.[0];
+    if (!resultElement) return 0;
+    const rawValue = resultElement.value?.[1];
+    return rawValue ? parseInt(rawValue, 10) : 0;
+  };
+
 
   return {
-    totalRacks,
-    totalEquipment,
-    criticalAlerts,
+    //Extracted metric calculations
+    racksCreated: parsePromValue(racksCreated.data),
+    equipmentCreated: parsePromValue(equipmentCreated.data),
+    httpRequests: parsePromValue(httpRequests.data),
     warnings: unresolvedWarnings,
+
     isLoading:
-      racksQuery.isLoading || equipmentQuery.isLoading || warningsQuery.isLoading,
+      racksCreated.isLoading ||
+      equipmentCreated.isLoading ||
+      httpRequests.isLoading ||
+      warningsQuery.isLoading,
   };
 }

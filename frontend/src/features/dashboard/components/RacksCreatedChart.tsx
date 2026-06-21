@@ -1,14 +1,6 @@
 import { useMemo } from 'react';
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-} from 'recharts';
-import { usePromQuery } from '../hooks/usePrometheus';
+import { LineChart, Line, XAxis,YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
+import { usePromQuery } from '../hooks/useDashboardStats';
 import { Skeleton } from '@/components/ui/skeleton';
 import type{ PromRangeResult } from '../api';
 import { AlertCircle } from 'lucide-react';
