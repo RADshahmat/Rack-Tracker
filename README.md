@@ -318,7 +318,7 @@ docker compose logs -f backend
 4. Writes to disk
 5. POSTs `/-/reload` to Prometheus
 
-Config also **auto-regenerates** on any rack/equipment create/update/delete, debounced by 3 seconds to avoid hammering Prometheus during bulk changes.
+
 
 ```bash
 # Manual trigger (admin only)
@@ -347,7 +347,7 @@ npm run test:coverage # generate coverage report
 | `cronScheduler` | ~78% |
 | `configGenerator` | ~90% |
 
-Ship bar: ≥60% on auth + scheduler modules — both well above target.
+
 
 ### What's tested
 
