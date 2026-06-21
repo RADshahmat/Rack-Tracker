@@ -14,7 +14,7 @@ export function Warnings() {
   const { mutate: resolveWarning, isPending: isResolving } = useResolveWarning();
 
   const warnings = warningsData?.data || [];
-
+//console.log('Fetched warnings:', warnings);
   const handleResolveWarning = (warningId: number) => {
     resolveWarning(warningId);
   };
@@ -77,7 +77,7 @@ export function Warnings() {
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs">
-                            {warning.emailed ? 'Sent' : '—'}
+                            {warning.emailed===true ? 'Sent' : '—'}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm text-gray-600 dark:text-gray-400">

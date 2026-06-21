@@ -9,7 +9,7 @@ import {
     Cell,
     ResponsiveContainer,
 } from 'recharts';
-import { usePromQuery } from '../hooks/usePrometheus';
+import { usePromQuery } from '../hooks/useDashboardStats';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { PromInstantResult } from '../api';
 import { AlertCircle } from 'lucide-react';

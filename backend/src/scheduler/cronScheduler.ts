@@ -74,9 +74,9 @@ class CronScheduler {
             console.log(`[Scheduler] Found ${emptyRacks.length} empty rack(s)`);
 
             const newlyWarned: EmptyRack[] = [];
+            const newWarningIds: number[] = [];       
 
             for (const rack of emptyRacks) {
-                // Skip if a warning already exists for this rack in the last 10 minutes — prevents spam
                 const recent = await warningRepository.findRecentWarningByRackId(rack.id, 10);
                 if (recent) {
                     console.log(`[Scheduler] Skipping ${rack.tag} — recent warning exists`);
@@ -88,14 +88,26 @@ class CronScheduler {
                     rack_tag: rack.tag,
                     message: `Rack ${rack.tag} (${rack.name}) has no equipment assigned`,
                 });
-                warningsCreatedTotal.inc(); 
+                warningsCreatedTotal.inc();
                 console.log(`[Scheduler] Warning created for rack ${rack.tag} — ID: ${warning.id}`);
+
                 newlyWarned.push(rack);
+                newWarningIds.push(warning.id);          
             }
 
-            // send email for newly warned racks
             if (newlyWarned.length > 0) {
-                await sendWarningEmail(newlyWarned);
+                try {
+                    await sendWarningEmail(newlyWarned);
+
+                    // Mark all newly created warnings as emailed
+                    await Promise.all(
+                        newWarningIds.map((id) => warningRepository.markEmailed(id))
+                    );
+                    console.log(`[Scheduler] Marked ${newWarningIds.length} warning(s) as emailed`);
+                } catch (emailError) {
+                
+                    console.error('[Scheduler] Failed to send warning email:', emailError);
+                }
             }
         } catch (error) {
             console.error('[Scheduler] Job failed:', error);
