@@ -10,6 +10,8 @@
 ![MailHog](https://img.shields.io/badge/MailHog-1A80B6?style=flat&logo=maildotru&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 ---
+## Screenshots
+![Cron Scheduler](./images/frontendv2.png)
 
 ## Features added in v2
 

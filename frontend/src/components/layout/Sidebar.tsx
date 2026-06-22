@@ -1,6 +1,6 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useTheme } from '@/components/shared/ThemeProvider';
-import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut, Settings, Clock } from 'lucide-react';
+import { LayoutDashboard, Server, Cpu, Moon, Sun, LogOut, LucideMessageSquareWarning, Clock } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface SidebarProps {
@@ -17,13 +17,15 @@ export function Sidebar({ isExpanded }: SidebarProps) {
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/racks', label: 'Racks', icon: Server },
     { path: '/equipment', label: 'Equipment', icon: Cpu },
-    ...(isAdmin ? [{ path: '/admin/scheduler', label: 'Scheduler', icon: Clock }] : []),
+    ...(isAdmin ? [
+      { path: '/admin/scheduler', label: 'Scheduler', icon: Clock },
+      { path: '/admin/warnings', label: 'Warnings', icon: LucideMessageSquareWarning },
+    ] : []),
   ];
 
   return (
-    <aside className={`fixed left-0 top-0 h-full bg-white dark:bg-dark-surface border-r border-gray-200 dark:border-dark-border flex flex-col py-4 z-40 transition-all duration-300 ${
-      isExpanded ? 'w-64' : 'w-20'
-    }`}>
+    <aside className={`fixed left-0 top-0 h-full bg-white dark:bg-dark-surface border-r border-gray-200 dark:border-dark-border flex flex-col py-4 z-40 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'
+      }`}>
       {/* Logo section - only visible when NOT expanded */}
       {!isExpanded && (
         <div className="px-2 mb-6 flex justify-center">
@@ -58,11 +60,10 @@ export function Sidebar({ isExpanded }: SidebarProps) {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 h-10 px-3 rounded-lg transition-all ${
-                isActive
+              className={`flex items-center gap-3 h-10 px-3 rounded-lg transition-all ${isActive
                   ? 'bg-sky-600 dark:bg-sky-600 text-white dark:text-white'
                   : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border'
-              }`}
+                }`}
               title={isExpanded ? '' : item.label}
             >
               <Icon size={20} className="shrink-0" />
@@ -96,5 +97,3 @@ export function Sidebar({ isExpanded }: SidebarProps) {
     </aside>
   );
 }
-
-
