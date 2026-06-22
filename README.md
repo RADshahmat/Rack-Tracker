@@ -4,25 +4,27 @@
 > Express 5 + TypeScript + PostgreSQL + React 19 + Docker
 
 ---
+## Screenshots
+![Dashboard](./images/frontendv1.png)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker >= 24.0
 - Docker Compose >= 2.20
 
 ```bash
-# 1. Clone
-git clone <repository-url>
+# 1. Clone and navigate to the directory
+git clone https://github.com/RADshahmat/Rack-Tracker.git
 cd rack-tracker
 
-# 2. Environment setup
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+# 2. Then Environment setup
+cp .env.example .env
 
-# 3. Fire it up
+# 3. Build docker images and run
 docker compose up
 ```
+after this services will start on below url
 
 | Service | URL |
 |---------|-----|
@@ -32,7 +34,7 @@ docker compose up
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 rack-tracker/                         # Root
@@ -92,7 +94,7 @@ rack-tracker/                         # Root
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────┐
@@ -118,7 +120,7 @@ rack-tracker/                         # Root
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -126,7 +128,7 @@ rack-tracker/                         # Root
 | **Data Fetching** | TanStack Query v5 |
 | **UI Components** | shadcn/ui + Radix UI |
 | **Styling** | Tailwind CSS v4 |
-| **HTTP Client** | Axios |
+| **HTTP Client** | Api client, Fetch |
 | **Routing** | React Router v6 |
 | **Backend Framework** | Express 5 |
 | **Language** | TypeScript 5.5 |
@@ -137,7 +139,7 @@ rack-tracker/                         # Root
 
 ---
 
-## 📚 API Reference
+## API Reference
 
 ### Racks
 
@@ -168,7 +170,7 @@ rack-tracker/                         # Root
 
 ---
 
-## 🗃️ Database Schema
+## Database Schema
 
 ```sql
 -- Racks
@@ -199,15 +201,15 @@ Seeded with **5 racks** and **19 equipment** items on first `docker compose up`.
 
 ---
 
-## 🔒 Security
+## Security
 
-- ✅ Parameterized SQL everywhere (zero injection risk)
-- ✅ Zod validation on all write endpoints (POST + PUT)
-- ✅ CORS restricted to frontend origin via env var
-- ✅ Input sanitization — auto-trim middleware on all requests
-- ✅ No secrets in git — `.env.example` only
-- ✅ Consistent error shape `{ success, message, errors[] }` across all endpoints
-- ✅ Duplicate tag rejected with 400 before hitting the database
+- ✓ Parameterized SQL everywhere (zero injection risk)
+- ✓ Zod validation on all write endpoints (POST + PUT)
+- ✓ CORS restricted to frontend origin via env var
+- ✓ Input sanitization — auto-trim middleware on all requests
+- ✓ No secrets in git — `.env.example` only
+- ✓ Consistent error shape `{ success, message, errors[] }` across all endpoints
+- ✓ Duplicate tag rejected with 400 before hitting the database
 
 ---
 
@@ -248,7 +250,7 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-## 🧪 Manual Test Plan
+## Manual Test Plan
 
 ### Racks
 - [ ] `POST /api/racks` valid body → 201
@@ -286,17 +288,17 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-## ✅ Self-Evaluation — Phase 2 Capstone
+## Self-Evaluation — Phase 2 Capstone
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
-| **D1 Functionality** | **4/4** | Full CRUD for racks + equipment via API and UI ✅ `docker compose up` brings up all 3 services with seeded DB ✅ Equipment placed in rack displayed in grid ✅ Pagination via `?page=&limit=` ✅ |
-| **D2 Code Quality** | **4/4** | Controller → Service → Repository enforced ✅ Zero SQL outside repositories ✅ Modules co-located (`modules/racks/`, `modules/equipment/`) ✅ Singleton class exports ✅ Typed repository interfaces ✅ TanStack query key factory centralized ✅ |
-| **D3 Validation/Security** | **4/4** | Zod on every write endpoint ✅ Structured errors `{ success, message, errors[] }` ✅ Parameterized SQL everywhere ✅ CORS restricted to frontend origin ✅ Duplicate tag → 400 via Zod refine ✅ Body sanitizer trim middleware ✅ |
-| **D4 Developer Experience** | **4/4** | `docker compose up` works from fresh clone ✅ `.env.example` covers every variable ✅ Postgres seeds via `docker-entrypoint-initdb.d/` ✅ Healthcheck on Postgres + backend waits ✅ Hot reload on both frontend and backend ✅ |
-| **D5 Testing/Observability** | **3/4** | Manual test plan covers create/list/update/delete for both resources ✅ Request logging middleware (method + path + status) ✅ `/healthz` endpoint with DB check ✅ |
+| **D1 Functionality** | **4/4** | [Full CRUD for racks + equipment via API and UI](#screenshots) ✓ [`docker compose up`](./docker-compose.yaml) brings up all 3 services with seeded DB ✓[ Equipment placed in rack displayed in grid](#screenshots) ✓ [Pagination via `?page=&limit=`](./backend/src/modules/equipment/equipment.controller.ts) ✓ |
+| **D2 Code Quality** | **4/4** | [Controller → Service → Repository enforced](./backend/src/modules/) ✓ Zero SQL outside repositories ✓[ Modules co-located (`modules/racks/`, `modules/equipment/`)](./backend/src/modules/) ✓ [Singleton class exports](./backend/src/modules/racks/rack.repository.ts) ✓ [Typed repository interfaces](./backend/src/modules/racks/rack.types.ts) ✓ [TanStack query key factory centralized ✓](./frontend/src/api/queryKeys.ts) |
+| **D3 Validation/Security** | **3/4** | [Zod on every write endpoint](./backend/src/modules/racks/rack.schema.ts) ✓ [Structured errors `{ success, message, errors[] }`](./backend/src/shared/errorHandler.ts) ✓ [Parameterized SQL everywhere](./backend/src/modules/equipment/equipment.repository.ts) ✓ [CORS restricted to frontend origin](./backend/src/app.ts) ✓ [Duplicate tag → 400](./backend/src/modules/racks/rack.schema.ts) ✓ [Body sanitizer trim middleware](./backend/src/shared/sanitizer.ts) ✓ |
+| **D4 Developer Experience** | **4/4** | [`docker compose up`](./docker-compose.yaml) works from fresh clone ✓ [`.env.example`](#environment-variables) covers every variable ✓ [Postgres seeds via `docker-entrypoint-initdb.d/`](#database-schema) ✓ [Healthcheck on Postgres](./docker-compose.yaml) + [backend waits](./backend/src/app.ts)✓ Hot reload on both frontend and backend ✓ |
+| **D5 Testing/Observability** | **4/4** | [Manual test plan covers create/list/update/delete for both resources](#manual-test-plan) ✓ [Request logging middleware (method + path + status)](./backend/src/shared/logger.ts) ✓ [`/healthz` endpoint with DB check](./backend/src/app.ts) ✓ |
 
-**Total: 19/20** — Ship bar met ✅ (all dimensions ≥ 3, none below)
+**Total: 19/20** — Ship bar met ✓ (all dimensions ≥ 3, none below)
 
 **Reviewed by:** Self
 **Date:** 2025-05-24
