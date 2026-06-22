@@ -79,7 +79,7 @@ curl -c cookies.txt -X POST http://localhost:3000/api/auth/login \
 ---
 
 <details>
-<summary><span style="font-size: 1.4em; font-weight: bold;">Project Structure</span></summary>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Project Structure</span></summary>
 
 ```
 rack-tracker/
@@ -172,7 +172,7 @@ rack-tracker/
 
 
 <details>
-<summary><span style="font-size: 1.4em; font-weight: bold;">Architecture</span></summary>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Architecture</span></summary>
 
 ```
 Frontend (React 19 + TanStack Query)
@@ -206,7 +206,7 @@ Backend Event Emitter (rack/equipment changed)
 </details>
 
 <details>
-<summary><span style="font-size: 1.4em; font-weight: bold;">Tech Stack</span></summary>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Tech Stack</span></summary>
 
 | Layer | Technology |
 |-------|-----------|
@@ -227,7 +227,7 @@ Backend Event Emitter (rack/equipment changed)
 </details>
 
 <details>
-<summary><span style="font-size: 1.4em; font-weight: bold;">API Reference</span></summary>
+<summary><span style="font-size: 1.5em; font-weight: bold;">API Reference</span></summary>
 
 ### Auth (Public)
 
