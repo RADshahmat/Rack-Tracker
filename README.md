@@ -1,28 +1,47 @@
 # Rack Tracker v2
 
 > Extends v1 with JWT auth, Casbin RBAC, PDF uploads, and a cron scheduler with warnings.
-> Express 5 + TypeScript + PostgreSQL + React 19 + Docker
 
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=flat&logo=express&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)
+![Casbin](https://img.shields.io/badge/Casbin_RBAC-5849A6?style=flat&logo=casbin&logoColor=white)
+![MailHog](https://img.shields.io/badge/MailHog-1A80B6?style=flat&logo=maildotru&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 ---
 
-## 🚀 Quick Start
+## Features added in v2
+
+* **Authentication** – httpOnly JWT cookies with login, logout, and `/api/auth/me` endpoint.
+* **Authorization** – Casbin RBAC with 3 predefined roles and a deny-by-default policy.
+* **File Uploads** – Multer-based PDF uploads with a 5 MB file size limit and UUID-generated filenames.
+* **Scheduler** – `node-cron` powered background jobs for empty-rack monitoring with hot-reload support.
+* **Email Alerts** – MailHog SMTP integration that sends warning emails during each scheduler run.
+* **Rate Limiting** – Restricts login attempts to **10 requests per 15 minutes** per client.
+
+
+## Quick Start
 
 ### Prerequisites
 - Docker >= 24.0
 - Docker Compose >= 2.20
 
 ```bash
-# 1. Clone
-git clone <repository-url>
+# 1. First clone the repository
+git clone https://github.com/RADshahmat/Rack-Tracker.git
 cd rack-tracker
 
+# Switch to the v2-security-features version branch
+git switch v2-security-features
+
 # 2. Environment setup
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+cp .env.example .env
 
 # 3. Start everything
 docker compose up
 ```
+Once the application is up, you can access the running services at the following local URLs:
 
 | Service | URL |
 |---------|-----|
@@ -33,7 +52,8 @@ docker compose up
 
 ---
 
-## 🔐 Default Users
+## Seeded Users 
+Go to the frontend and login with a credential.
 
 | Username | Password | Role |
 |----------|----------|------|
@@ -41,13 +61,11 @@ docker compose up
 | `operator` | `password123` | No delete |
 | `viewer` | `password123` | Read only |
 
-### One-command login (curl)
+### One-command login check (curl)
 
 ```bash
-# Login as admin
-curl -c cookies.txt -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"password123"}'
+# Open command prompt in windows and Login as admin
+curl -c cookies.txt -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d "{\"username\":\"admin\",\"password\":\"password123\"}"
 
 # Access protected route
 curl -b cookies.txt http://localhost:3000/api/racks
@@ -58,7 +76,10 @@ curl -b cookies.txt -X POST http://localhost:3000/api/auth/logout
 
 ---
 
-## 📁 Project Structure
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Project Structure</span></summary>
+
+## Project Structure
 
 ```
 rack-tracker/
@@ -121,8 +142,12 @@ rack-tracker/
 ```
 
 ---
+</details>
 
-## 🏗️ Architecture
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Architecture</span></summary>
+
+## Architecture
 
 ```
 Frontend (React 19 + TanStack Query)
@@ -144,6 +169,10 @@ CronScheduler (node-cron)
 - Multer filenames are **always UUID** — never user-supplied
 
 ---
+</details>
+
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Tech Stack</span></summary>
 
 ## 🛠️ Tech Stack
 
@@ -167,8 +196,12 @@ CronScheduler (node-cron)
 | **Containerization** | Docker + Docker Compose |
 
 ---
+</details>
 
-## 📚 API Reference
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">API Reference</span></summary>
+
+## API Reference
 
 ### Auth (Public)
 
@@ -226,23 +259,12 @@ CronScheduler (node-cron)
 | GET | `/healthz` | Service + DB health check |
 
 ---
+</details>
 
-## 🔒 Role Permissions
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Database Schema</span></summary>
 
-| Action | admin | operator | viewer |
-|--------|-------|----------|--------|
-| GET racks / equipment | ✅ | ✅ | ✅ |
-| POST racks / equipment | ✅ | ✅ | ❌ |
-| PUT racks / equipment | ✅ | ✅ | ❌ |
-| DELETE racks / equipment | ✅ | ❌ | ❌ |
-| Upload PDF | ✅ | ✅ | ❌ |
-| Delete attachment | ✅ | ❌ | ❌ |
-| View / resolve warnings | ✅ | ❌ | ❌ |
-| Restart cron | ✅ | ❌ | ❌ |
-
----
-
-## 🗃️ Database Schema
+## Database Schema
 
 ```sql
 -- Users
@@ -271,8 +293,118 @@ emailed, created_at
 ```
 
 ---
+</details>
 
-## ⏰ Scheduler
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Environment Variables</span></summary>
+
+## Environment Variables
+
+Create a `.env` file in the project root and configure the following variables:
+
+| Variable            | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `POSTGRES_USER`     | PostgreSQL username                                          |
+| `POSTGRES_PASSWORD` | PostgreSQL password                                          |
+| `POSTGRES_DB`       | PostgreSQL database name                                     |
+| `DATABASE_URL`      | PostgreSQL connection string                                 |
+| `PORT`              | Backend server port                                          |
+| `NODE_ENV`          | Application running mode (`development`, `production`, etc.) |
+| `CORS_ORIGIN`       | Frontend application URL allowed by CORS                     |
+| `JWT_SECRET`        | Secret key used to sign JWT tokens                           |
+| `JWT_EXPIRES_IN`    | JWT token expiration time (e.g., `7d`)                       |
+| `CRON_EXPRESSION`   | Cron schedule expression for background jobs                 |
+| `SMTP_HOST`         | SMTP server host (e.g., `localhost` for MailHog)             |
+| `SMTP_PORT`         | SMTP server port (`1025` for MailHog)                        |
+| `SMTP_FROM`         | Sender email address                                         |
+| `SMTP_TO`           | Recipient email address for warning notifications            |
+
+
+---
+</details>
+
+<details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Test Coverage(Jest+supertest)</span></summary>
+
+## Test Coverage(Jest+supertest)
+```
+--------------------------|---------|----------|---------|---------|----------------------------------------------
+File                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                            
+--------------------------|---------|----------|---------|---------|----------------------------------------------
+All files                 |   62.07 |    34.16 |   63.71 |   61.82 |                                              
+ src                      |   81.81 |     12.5 |   33.33 |   81.81 |                                              
+  app.ts                  |   81.81 |     12.5 |   33.33 |   81.81 | 54-65,72                                     
+ src/casbin               |      95 |        0 |     100 |   94.44 |                                              
+  enforcer.ts             |      95 |        0 |     100 |   94.44 | 29                                           
+ src/middleware           |   70.37 |       25 |      50 |   69.23 |                                              
+  authMiddleware.ts       |   84.61 |      100 |     100 |   83.33 | 30-31                                        
+  casbinMiddleware.ts     |   81.81 |       50 |     100 |   80.95 | 12-16,45-46                                  
+  uploadMiddleware.ts     |   47.36 |        0 |       0 |   47.36 | 10,15-21,30-40                               
+ src/modules/auth         |   94.11 |    66.66 |     100 |   94.11 |                                              
+  auth.controller.ts      |      90 |      100 |     100 |      90 | 55,71                                        
+  auth.repository.ts      |     100 |       75 |     100 |     100 | 34                                           
+  auth.schema.ts          |     100 |      100 |     100 |     100 |                                              
+  auth.service.ts         |      95 |       60 |     100 |      95 | 57                                           
+ src/modules/equipment    |   52.25 |     41.5 |   72.72 |   52.25 |                                              
+  equipment.controller.ts |   50.84 |    52.94 |   66.66 |   50.84 | 15-19,22-26,38-61,81-100,108-112,122,130-134 
+  equipment.repository.ts |   53.06 |    42.85 |    87.5 |   53.06 | 141-177                                      
+  equipment.schema.ts     |      75 |      100 |       0 |      75 | 62                                           
+  equipment.service.ts    |   51.16 |    26.66 |   71.42 |   51.16 | 19-23,50-79,85,90                            
+ src/modules/racks        |   51.92 |    31.25 |   61.11 |   52.21 |                                              
+  rack.controller.ts      |   41.37 |        0 |   55.55 |   42.35 | 18-41,50-54,88-92,112-116,132-219            
+  rack.repository.ts      |   64.28 |       50 |   61.53 |   65.45 | 91-92,99-100,103-104,129-172                 
+  rack.schema.ts          |     100 |      100 |     100 |     100 |                                              
+  rack.service.ts         |   52.45 |    27.77 |   61.53 |   50.84 | 18-22,73-75,83,96-153                        
+ src/modules/warnings     |   64.58 |       25 |   63.63 |   64.58 |                                              
+  warning.controller.ts   |   79.16 |       50 |     100 |   79.16 | 16,30,38-42,60                               
+  warning.repository.ts   |      50 |    16.66 |      50 |      50 | 24-47,78-100                                 
+ src/routes               |   88.88 |      100 |       0 |   88.88 |                                              
+  admin.routes.ts         |      50 |      100 |       0 |      50 | 13-27,37-38                                  
+  auth.routes.ts          |     100 |      100 |     100 |     100 |                                              
+  equipment.routes.ts     |     100 |      100 |     100 |     100 |                                              
+  index.ts                |     100 |      100 |     100 |     100 |                                              
+  rack.routes.ts          |     100 |      100 |     100 |     100 |                                              
+  warning.route.ts        |     100 |      100 |     100 |     100 |                                              
+ src/scheduler            |   22.95 |        0 |      20 |   21.66 |                                              
+  cronScheduler.ts        |   20.83 |        0 |   28.57 |   20.83 | 16-30,35-36,43-101                           
+  mailer.ts               |   30.76 |        0 |       0 |      25 | 5,14-40                                      
+ src/shared               |   70.58 |    58.33 |   83.33 |   69.23 |                                              
+  db.ts                   |   58.82 |      100 |      60 |   58.82 | 19-20,36-41                                  
+  errorHandler.ts         |   63.88 |    28.57 |     100 |   62.85 | 35-47,52-57,72-87                            
+  logger.ts               |     100 |      100 |     100 |     100 |                                              
+  sanitizer.ts            |     100 |      100 |     100 |     100 |                                              
+--------------------------|---------|----------|---------|---------|----------------------------------------------
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       1 failed, 44 passed, 45 total
+Snapshots:   0 total
+Time:        12.968 s
+Ran all test suites.
+```
+</details>
+
+
+## Role Permissions
+
+| Action | admin | operator | viewer |
+|--------|-------|----------|--------|
+| GET racks / equipment | ✓ | ✓ | ✓ |
+| POST racks / equipment | ✓ | ✓ | ❌ |
+| PUT racks / equipment | ✓ | ✓ | ❌ |
+| DELETE racks / equipment | ✓ | ❌ | ❌ |
+| Upload PDF | ✓ | ✓ | ❌ |
+| Delete attachment | ✓ | ❌ | ❌ |
+| View / resolve warnings | ✓ | ❌ | ❌ |
+| Restart cron | ✓ | ❌ | ❌ |
+
+---
+## API Response Shape
+All responses follow the same shape:
+```
+{ "success": true, "data": {} }
+{ "success": false, "message": "...", "errors": [] }
+```
+## Test Scheduler
 
 The cron job runs every 5 minutes and:
 1. Queries all racks with zero equipment assigned
@@ -280,48 +412,55 @@ The cron job runs every 5 minutes and:
 3. Writes a `warnings` row for each newly empty rack
 4. Sends an email via MailHog (if `SMTP_HOST` is configured)
 
-**Hot-reload the schedule at runtime:**
+**Hot-reload the schedule at runtime (Testing):**
 ```bash
+# Open command prompt in windows and Login as admin
+curl -c cookies.txt -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d "{\"username\":\"admin\",\"password\":\"password123\"}"
+
 # Restart with current expression
 curl -b cookies.txt http://localhost:3000/admin/restart-cron
 
 # Restart with new expression (every 10 minutes)
-curl -b cookies.txt "http://localhost:3000/admin/restart-cron?expression=*/10 * * * *"
+curl -b cookies.txt "http://localhost:3000/admin/restart-cron?expression=* * * * *"
+
+# Check status
+curl http://localhost:3000/api/admin/cron-status -b admin-cookies.txt
+
+#after 1 minute,check http://localhost:8025 for the warning email.
+```
+
+## Output log in backend for scheduler(cron)
+```
+[Scheduler] Started with expression: "*/5 * * * *"
+
+🚀 Server running on port 3000
+
+📊 Environment: development
+
+🔗 Health check: http://localhost:3000/healthz
+
+[Scheduler] Running empty rack check at 2026-06-22T10:15:00.684Z
+
+[Scheduler] Found 1 empty rack(s)
+
+[Scheduler] Warning created for rack DEV-001 — ID: 45
+
+[Mailer] Warning email sent for 1 empty rack(s)
+
+[Scheduler] Running empty rack check at 2026-06-22T10:20:00.069Z
+
+[Scheduler] Found 1 empty rack(s)
+
+[Scheduler] Skipping DEV-001 — recent warning exists
+
+[2026-06-22T10:22:17.077Z] GET /me 304 - 40ms
+
+[2026-06-22T10:22:17.088Z] GET /me 304 - 5ms
 ```
 
 ---
 
-## 💻 Environment Variables
-
-**`backend/.env.example`**
-```env
-PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgresql://rackuser:rackpass@localhost:5432/racktracker
-CORS_ORIGIN=http://localhost:5173
-
-# Auth
-JWT_SECRET=supersecretjwtsecretchangethisinproduction
-JWT_EXPIRES_IN=7d
-
-# Scheduler
-CRON_EXPRESSION=*/5 * * * *
-
-# SMTP (stretch — MailHog)
-SMTP_HOST=localhost
-SMTP_PORT=1025
-SMTP_FROM=rack-tracker@rack.local
-SMTP_TO=admin@rack.local
-```
-
-**`frontend/.env.example`**
-```env
-VITE_API_URL=http://localhost:3000
-```
-
----
-
-## 🧪 Manual Test Plan
+## Manual Test Plan
 
 ### Auth
 - [ ] `POST /api/auth/login` valid → 200 + cookie set
@@ -357,23 +496,38 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-## ✅ Self-Evaluation — Phase 3 Capstone
+## Security
+
+| Layer | Protection |
+|-------|-----------|
+| Authentication | JWT verified on every protected route via `authMiddleware` |
+| Authorization | Casbin denies by default — no matching policy = 403 |
+| Credentials | Passwords never logged in plaintext anywhere |
+| Session Cookie | `httpOnly` + `SameSite=Strict` |
+| File Uploads | Multer uses UUID filenames — user-supplied names never used |
+| Rate Limiting | 10 login attempts per 15 minutes |
+| CORS | Restricted to `CORS_ORIGIN` only |
+| SQL Injection | All SQL parameterized — no string interpolation |
+
+---
+
+## Self-Evaluation — Phase 3 Capstone
 
 | Dimension | Score | Evidence |
 |-----------|-------|----------|
-| **D1 Functionality** | **4/4** | Login/logout httpOnly cookie ✅ Casbin viewer can't delete ✅ Multer PDF 5MB cap ✅ node-cron writes warnings every 5min ✅ `GET /admin/restart-cron` hot-reloads ✅ MailHog email on warnings ✅ Runtime expression change via query param ✅ |
-| **D2 Code Quality** | **4/4** | `authMiddleware`, `casbinMiddleware`, `uploadMiddleware` each isolated ✅ Casbin model file committed + documented ✅ Scheduler class stoppable + restartable ✅ Middleware composition as array in routes ✅ |
-| **D3 Validation/Security** | **4/4** | JWT verified on every protected route ✅ Casbin denies by default ✅ Multer restricts MIME + size ✅ Password never logged ✅ `httpOnly` + `SameSite=Strict` cookie ✅ UUID filenames — never user-supplied ✅ Rate limit on login (10 req/15min) ✅ |
-| **D4 Developer Experience** | **4/4** | Seeded users for all 3 roles documented ✅ One-command curl login in README ✅ `docker compose up` works from fresh clone ✅ `.env.example` covers all variables ✅ |
-| **D5 Testing/Observability** | **3/4** | 401 on unauthed ✅ 403 on forbidden ✅ 200 on allowed ✅ Cron visible in logs ✅ |
+| **D1 Functionality** | **4/4** | [Login/logout httpOnly cookie](./backend/src/modules/auth/auth.controller.ts) ✓ Casbin viewer can't delete ✓ [Multer PDF 5MB cap](./backend/src/middleware/uploadMiddleware.ts) ✓ node-cron writes warnings every 5min ✓ `GET /admin/restart-cron` hot-reloads ✓ [MailHog email on warnings](./images/mailhog.png) ✓ [Runtime expression change via query param](./images/cron%20expression.png) ✓ |
+| **D2 Code Quality** | **3/4** | [`authMiddleware`](./backend/src/middleware/authMiddleware.ts), [`casbinMiddleware`](./backend/src/middleware/casbinMiddleware.ts), [`uploadMiddleware`](./backend/src/middleware/uploadMiddleware.ts) each isolated ✓ [Casbin model file committed](./backend/src/casbin/model.conf) [+ documented](./backend/src/casbin/policy.csv) ✓ [Scheduler class stoppable + restartable](./backend/src/scheduler/cronScheduler.ts) ✓ [Middleware composition as array in routes](./backend/src/routes/index.ts) ✓ |
+| **D3 Validation/Security** | **4/4** | [JWT verified on every protected route](./backend/src/routes/index.ts) ✓ Casbin denies by default ✓ Multer restricts MIME + size ✓ Password never logged ✓ [`httpOnly` + `SameSite=Strict` cookie](./backend/src/modules/auth/auth.controller.ts) [✓ UUID filenames — never user-supplied](./backend//src/middleware/uploadMiddleware.ts) ✓ [Rate limit on login (10 req/15min) ✓](./backend/src/routes/auth.routes.ts) |
+| **D4 Developer Experience** | **4/4** | [Seeded users for all 3 roles documented](#seeded-users) ✓ [One-command curl login in README](#one-command-login-check-curl) ✓ [`docker compose up`](docker-compose.yaml) works from fresh clone ✓ [`.env.example`](#environment-variables) covers all variables ✓ |
+| **D5 Testing/Observability** | **3/4** | [Manual test plan 401 on unauthed ✓ 403 on forbidden ✓ 200 on allowed](#manual-test-plan) ✓ [Cron visible in logs ✓](#output-log-in-backend-for-schedulercron) [Coverage report committed ✓](#test-coveragejestsupertest)|
 
-**Total: 19/20** — Ship bar met ✅ (all dimensions ≥ 3)
+**Total: 18/20** — Ship bar met ✓ (all dimensions ≥ 3)
 
 **Reviewed by:** Self
 **Date:** 2026-06-07
 
 ---
 
-## 📄 License
+## Author
 
-MIT
+Md. Rad Shahmat

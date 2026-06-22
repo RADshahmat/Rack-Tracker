@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
     },
     filename: (_req, _file, cb) => {
         // NEVER use user-supplied filename — always UUID
-        // D3 Exemplary requirement
         const uuidFilename = `${uuidv4()}.pdf`;
         cb(null, uuidFilename);
     },

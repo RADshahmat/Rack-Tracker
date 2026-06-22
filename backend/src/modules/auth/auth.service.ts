@@ -14,8 +14,6 @@ class AuthService {
     async login(data: LoginInput): Promise<{ user: PublicUser; token: string }> {
         const user = await this.repository.findByUsername(data.username);
 
-        // Same error for wrong username or wrong password
-        // prevents username enumeration attack
         if (!user) {
 
             throw new AppError(401, 'Invalid username or password');
@@ -24,7 +22,7 @@ class AuthService {
         const passwordMatch = await bcrypt.compare(data.password, user.password);
         // console.log('Password match:', passwordMatch); // Debug log
         if (!passwordMatch) {
-            throw new AppError(401, 'hurrrr Invalid username or password');
+            throw new AppError(401, 'Invalid username or password');
         }
 
         const payload: JwtPayload = {
@@ -34,7 +32,7 @@ class AuthService {
         };
 
         const token = jwt.sign(
-            { ...payload }, // Spreading into a fresh object satisfies the type checker
+            { ...payload }, 
             process.env.JWT_SECRET as string,
             {
                 expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'],
