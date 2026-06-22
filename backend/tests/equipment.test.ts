@@ -40,9 +40,14 @@ describe('Equipment', () => {
                 .set('Cookie', viewerCookie);
 
             expect(res.status).toBe(200);
-            expect(res.body.data).toHaveProperty('data');
-            expect(res.body.data).toHaveProperty('pagination');
-            expect(res.body.data.pagination.limit).toBe(5);
+
+            // ✨ FIX: Target res.body directly since it contains both root fields
+            expect(res.body).toHaveProperty('data');
+            expect(res.body).toHaveProperty('pagination');
+
+            // Safely verify the pagination limit value works
+            expect(res.body.pagination.limit).toBe(5);
+            expect(Array.isArray(res.body.data)).toBe(true);
         });
 
         it('returns 401 with no cookie', async () => {
@@ -50,7 +55,7 @@ describe('Equipment', () => {
             expect(res.status).toBe(401);
         });
     });
-
+    
     // ── POST /api/equipment ───────────────────────────────
 
     describe('POST /api/equipment', () => {
