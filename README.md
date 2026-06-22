@@ -81,6 +81,8 @@ curl -c cookies.txt -X POST http://localhost:3000/api/auth/login \
 <details>
 <summary><span style="font-size: 1.5em; font-weight: bold;">Project Structure</span></summary>
 
+## Project Structure
+
 ```
 rack-tracker/
 ├── backend/
@@ -174,6 +176,8 @@ rack-tracker/
 <details>
 <summary><span style="font-size: 1.5em; font-weight: bold;">Architecture</span></summary>
 
+## Architecture
+
 ```
 Frontend (React 19 + TanStack Query)
         ↕ HTTP REST + httpOnly Cookie
@@ -208,6 +212,8 @@ Backend Event Emitter (rack/equipment changed)
 <details>
 <summary><span style="font-size: 1.5em; font-weight: bold;">Tech Stack</span></summary>
 
+## Tech Stack
+
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | React 19, Vite, TanStack Query v5, shadcn/ui, Tailwind v4 |
@@ -227,8 +233,50 @@ Backend Event Emitter (rack/equipment changed)
 </details>
 
 <details>
+<summary><span style="font-size: 1.5em; font-weight: bold;">Environment Variables</span></summary>
+
+## Environment Variables
+
+```env
+# Database Configuration
+POSTGRES_USER=rackuser
+POSTGRES_PASSWORD=rackpass
+POSTGRES_DB=racktracker
+DATABASE_URL=postgresql://rackuser:rackpass@postgres:5432/racktracker
+
+# Backend Configuration
+NODE_ENV=development
+PORT=3000
+CORS_ORIGIN=http://localhost:5173
+
+# Frontend Configuration
+VITE_API_URL=http://localhost:3000/api
+
+# Auth
+JWT_SECRET=supersecretjwtsecretchangethisinproduction
+JWT_EXPIRES_IN=7d
+COOKIE_SECRET=supersecretcookiesecretchangethis
+
+# Scheduler
+CRON_EXPRESSION=*/5 * * * *
+
+# SMTP (stretch — MailHog)
+SMTP_HOST=mailhog
+SMTP_PORT=1025
+SMTP_FROM=rack-tracker@rack.local
+SMTP_TO=admin@rack.local
+
+PROMETHEUS_URL=http://prometheus:9090
+PROMETHEUS_CONFIG_PATH=/etc/prometheus/prometheus.yml
+```
+---
+
+</details>
+
+<details>
 <summary><span style="font-size: 1.5em; font-weight: bold;">API Reference</span></summary>
 
+## API Reference
 ### Auth (Public)
 
 | Method | Endpoint | Description |
@@ -403,42 +451,6 @@ Time:        31.908 s
 - Config generator snapshots — locks output shape, catches unintended structural changes
 - Metrics endpoint — public access, counter increments on rack creation, login tracking
 
----
-
-## Environment Variables
-
-```env
-# Database Configuration
-POSTGRES_USER=rackuser
-POSTGRES_PASSWORD=rackpass
-POSTGRES_DB=racktracker
-DATABASE_URL=postgresql://rackuser:rackpass@postgres:5432/racktracker
-
-# Backend Configuration
-NODE_ENV=development
-PORT=3000
-CORS_ORIGIN=http://localhost:5173
-
-# Frontend Configuration
-VITE_API_URL=http://localhost:3000/api
-
-# Auth
-JWT_SECRET=supersecretjwtsecretchangethisinproduction
-JWT_EXPIRES_IN=7d
-COOKIE_SECRET=supersecretcookiesecretchangethis
-
-# Scheduler
-CRON_EXPRESSION=*/5 * * * *
-
-# SMTP (stretch — MailHog)
-SMTP_HOST=mailhog
-SMTP_PORT=1025
-SMTP_FROM=rack-tracker@rack.local
-SMTP_TO=admin@rack.local
-
-PROMETHEUS_URL=http://prometheus:9090
-PROMETHEUS_CONFIG_PATH=/etc/prometheus/prometheus.yml
-```
 ---
 
 ## Self-Evaluation — Phase 4 Capstone
