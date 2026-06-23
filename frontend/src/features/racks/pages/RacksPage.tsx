@@ -75,9 +75,6 @@ export function RacksPage() {
             <h2 className="text-base font-black uppercase tracking-wider text-slate-900 dark:text-white">
               Rack Matrix Infrastructure
             </h2>
-            <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 hidden sm:block">
-              Telemetric allocation indexes & node telemetry arrays.
-            </p>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
@@ -110,7 +107,7 @@ export function RacksPage() {
       <div className="flex-1 flex overflow-hidden p-3 md:p-4 gap-4">
 
         {/* Left Column: Rack Matrix Grid View */}
-        <div className="w-full md:w-[380px] lg:w-[440px] shrink-0 overflow-auto border border-slate-200 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-slate-900 p-3 shadow-sm">
+        <div className="w-full md:w-95 lg:w-110 shrink-0 overflow-auto border border-slate-200 dark:border-slate-800/60 rounded-2xl bg-white dark:bg-slate-900 p-3 shadow-sm">
           {isLoading ? (
             <div className="flex items-center justify-center h-full py-12">
               <Loader2 className="text-amber-500 animate-spin" size={24} />
@@ -143,7 +140,7 @@ export function RacksPage() {
         <div className="hidden md:flex flex-1 min-w-0 border border-slate-200 dark:border-slate-800/60 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 flex-col shadow-sm">
           {selectedRack ? (
             <>
-              <div className="bg-slate-50/[0.4] dark:bg-slate-950/[0.2] border-b border-slate-200 dark:border-slate-800 p-4 shrink-0 flex items-center justify-between">
+              <div className="bg-slate-50/4 dark:bg-slate-950/2 border-b border-slate-200 dark:border-slate-800 p-4 shrink-0 flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">{selectedRack.tag} Mapping Array</h3>
                   <p className="text-[10px] font-mono text-slate-400">Chassis spatial index allocation matrix</p>
@@ -155,7 +152,7 @@ export function RacksPage() {
                     className="h-8 rounded-lg text-[11px] font-bold uppercase tracking-wider bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white gap-1.5"
                   >
                     <Plus size={12} />
-                    Mount Node
+                    Add Equipment
                   </Button>
                 </RoleGuard>
               </div>
@@ -177,7 +174,7 @@ export function RacksPage() {
             </>
           ) : (
             <div className="flex items-center justify-center flex-1 font-mono text-xs text-slate-400">
-              Select an operational asset node index to inspect telemetry arrays.
+              Select a rack to view its details.
             </div>
           )}
         </div>
@@ -221,7 +218,7 @@ export function RacksPage() {
                     {selectedRack.capacity}U Console
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-[260px]">{selectedRack.name}</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-95">{selectedRack.name}</p>
               </div>
               <button
                 onClick={() => { setSelectedRack(null); setSelectedEquipmentId(null); }}
@@ -281,7 +278,7 @@ export function RacksPage() {
                   />
                 )
               ) : (
-                <div className="h-full min-h-[300px]">
+                <div className="h-full min-h-75">
                   <RackDetails
                     rackId={selectedRack.id}
                     onAddEquipment={handleAddEquipment}

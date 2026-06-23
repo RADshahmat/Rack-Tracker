@@ -1,10 +1,21 @@
 FROM prom/prometheus:v2.45.0
 
-# Copy the config from your folder into the container
+# 1. Switch temporarily to root to fix folder permissions
+USER root
+
+# 2. Create the data directory and grant full ownership to the prometheus user account
+RUN mkdir -p /prometheus && chown -R nobody:nobody /prometheus
+
+# 3. Switch back to the default secure unprivileged account
+USER nobody
+
+# 4. Copy your metrics configuration file
 COPY prometheus.yml /etc/prometheus/prometheus.yml
 
-# Force Prometheus to save metrics data into the persistent volume mount point
+# 5. Explicitly tell Prometheus where to save its metrics state
+ENTRYPOINT [ "/bin/prometheus" ]
 CMD [ "--config.file=/etc/prometheus/prometheus.yml", \
-    "--storage.tsdb.path=/prometheus" ]
+    "--storage.tsdb.path=/prometheus", \
+    "--web.listen-address=:9090" ]
 
 EXPOSE 9090

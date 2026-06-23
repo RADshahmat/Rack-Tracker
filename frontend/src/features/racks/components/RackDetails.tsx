@@ -13,7 +13,7 @@ interface RackDetailsProps {
   onAddEquipment: (slotPosition?: number) => void;
 }
 
-export function RackDetails({ rackId, onAddEquipment }: RackDetailsProps) {
+export function RackDetails({ rackId }: RackDetailsProps) {
   const [rack, setRack] = useState<Rack | null>(null);
   const [rackLoading, setRackLoading] = useState(true);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -50,13 +50,16 @@ export function RackDetails({ rackId, onAddEquipment }: RackDetailsProps) {
 
   const handleViewAttachment = () => {
     if (!latestAttachment) return;
-    const downloadUrl = `/api/racks/${rackId}/attachments/${latestAttachment.id}/download`;
+    const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://rack-tracker-production-6c19.up.railway.app';
+
+    const downloadUrl = `${BACKEND_URL}/api/racks/${rackId}/attachments/${latestAttachment.id}/download`;
+
     window.open(downloadUrl, '_blank');
   };
 
   if (rackLoading) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[200px]">
+      <div className="flex items-center justify-center h-full min-h-50">
         <Loader2 className="text-amber-500 animate-spin" size={20} />
       </div>
     );
@@ -143,7 +146,7 @@ export function RackDetails({ rackId, onAddEquipment }: RackDetailsProps) {
           </div>
         ) : (
           <p className="text-xs font-mono text-slate-400 dark:text-slate-500 py-3 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
-            No hardware profile data blueprint allocated.
+            No rack profile data blueprint allocated.
           </p>
         )}
 
@@ -157,6 +160,14 @@ export function RackDetails({ rackId, onAddEquipment }: RackDetailsProps) {
           </Button>
         </RoleGuard>
       </div>
+      {/* Modals */}
+      {showUploadModal && (
+        <UploadSpecModal
+          rackId={rackId}
+          onClose={() => setShowUploadModal(false)}
+        />
+      )}
     </div>
+
   );
 }
