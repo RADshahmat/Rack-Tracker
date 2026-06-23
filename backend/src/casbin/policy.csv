@@ -8,6 +8,7 @@ p, admin, /api/racks/:id,                PUT
 p, admin, /api/racks/:id,                DELETE
 p, admin, /api/racks/:id/upload,         POST
 p, admin, /api/racks/:id/attachments/:attachmentId, DELETE
+p, admin, /api/racks/*/attachments/*/download, GET
 
 p, admin, /api/equipment,               GET
 p, admin, /api/equipment/rack/:rackId,   GET
@@ -20,8 +21,8 @@ p, admin, /api/warnings,            GET
 p, admin, /api/warnings/unresolved, GET
 p, admin, /api/warnings/:id/resolve, PATCH
 
-p, admin, /api/admin/restart-cron,                              GET
-p, admin, /api/admin/cron-status,                               GET
+p, admin, /api/admin/restart-cron,        GET
+p, admin, /api/admin/cron-status,         GET
 
 p, admin, /api/prometheus/reload,  POST
 p, admin, /api/prometheus/config,  GET
@@ -35,6 +36,7 @@ p, operator, /api/racks/:id/attachments, GET
 p, operator, /api/racks,                POST
 p, operator, /api/racks/:id,            PUT
 p, operator, /api/racks/:id/upload,     POST
+p, operator, /api/racks/*/attachments/*/download, GET
 
 p, operator, /api/equipment,            GET
 p, operator, /api/equipment/rack/:rackId, GET
@@ -47,6 +49,7 @@ p, viewer, /api/racks,                  GET
 p, viewer, /api/racks/:id,              GET
 p, viewer, /api/racks/:id/slots,        GET
 p, viewer, /api/racks/:id/attachments,  GET
+p, viewer, /api/racks/*/attachments/*/download, GET
 
 p, viewer, /api/equipment,              GET
 p, viewer, /api/equipment/rack/:rackId, GET

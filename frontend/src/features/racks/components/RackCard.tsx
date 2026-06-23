@@ -25,7 +25,7 @@ export function RackCard({ rack, isSelected, onClick, onEdit, onDelete }: RackCa
     <div
       onClick={onClick}
       className={`rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 group border flex flex-col justify-between ${isSelected
-          ? 'border-amber-500 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] shadow-md shadow-amber-500/[0.04]'
+          ? 'border-amber-500 bg-amber-500/2 dark:bg-amber-500/1 shadow-md shadow-amber-500/4'
           : 'border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 hover:border-amber-500/40'
         }`}
     >

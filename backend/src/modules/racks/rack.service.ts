@@ -60,7 +60,7 @@ class RackService {
         }
         const rack = await this.repository.create(data);
 
-        // Increment counter after successful creation
+        // Increment counter after successful creation for metrics tracking
         racksCreatedTotal.inc();
 
         return rack;
@@ -118,7 +118,7 @@ class RackService {
         return await this.repository.createAttachment({
             rack_id: rackId,
             filename: file.filename,            // UUID name
-            original_name: file.originalname,   // user's name
+            original_name: file.originalname,   // user's file name
             file_path: file.path,
             file_size: file.size,
             uploaded_by: uploadedBy,
@@ -131,6 +131,25 @@ class RackService {
             throw new AppError(404, `Rack with ID ${rackId} not found`);
         }
         return await this.repository.findAttachmentsByRackId(rackId);
+    }
+
+    async getAttachmentFile(
+        rackId: number,
+        attachmentId: number
+    ): Promise<RackAttachment> {
+        const attachment = await this.repository.findAttachmentById(
+            attachmentId
+        );
+
+        if (!attachment) {
+            throw new AppError(404, 'Attachment not found');
+        }
+
+        if (attachment.rack_id !== rackId) {
+            throw new AppError(404, 'Attachment not found for this rack');
+        }
+
+        return attachment;
     }
 
     async deleteAttachment(attachmentId: number, userId: number, role: string): Promise<void> {
@@ -153,8 +172,7 @@ class RackService {
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
-        } catch (err) {
-            // Log but don't throw — DB record is source of truth
+        } catch (err) {  
             console.error(`Failed to delete file from disk: ${filePath}`, err);
         }
     }

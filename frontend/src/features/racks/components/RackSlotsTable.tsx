@@ -48,10 +48,10 @@ export function RackSlotsTable({ rack, equipment, onSelectEquipment, onAssignSlo
 
                 {eq ? (
                   <>
-                    <TableCell className="font-semibold text-xs text-slate-900 dark:text-slate-100 max-w-[140px] truncate">
+                    <TableCell className="font-semibold text-xs text-slate-900 dark:text-slate-100 max-w-35 truncate">
                       {eq.name}
                     </TableCell>
-                    <TableCell className="text-xs text-slate-400 dark:text-slate-500 hidden sm:table-cell max-w-[100px] truncate font-mono">
+                    <TableCell className="text-xs text-slate-400 dark:text-slate-500 hidden sm:table-cell max-w-25 truncate font-mono">
                       {eq.type || 'GENERIC'}
                     </TableCell>
                     <TableCell className="text-right py-2.5">
