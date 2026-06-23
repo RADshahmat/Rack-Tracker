@@ -11,34 +11,35 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface">
-      <div className="text-xs text-gray-600 dark:text-gray-400">
-        Page {currentPage} of {totalPages}
+    <div className="flex items-center justify-between w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800/60 py-3 px-4">
+
+      {/* Informative Status Badge */}
+      <div className="text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+        Page <span className="text-slate-900 dark:text-slate-200">{currentPage}</span> of <span className="text-slate-600 dark:text-slate-400">{totalPages}</span>
       </div>
-      
-      <div className="flex gap-2">
+
+      {/* Interactive Navigation Triggers */}
+      <div className="flex items-center gap-1.5">
         <Button
           variant="outline"
-          size="sm"
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="gap-2"
         >
-          <ChevronLeft size={16} />
-          Previous
+          <ChevronLeft size={14} className="text-slate-500" />
+          <span className="hidden sm:inline">Previous</span>
         </Button>
-        
+
         <Button
           variant="outline"
-          size="sm"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="gap-2"
+      
         >
-          Next
-          <ChevronRight size={16} />
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight size={14} className="text-slate-500" />
         </Button>
       </div>
+
     </div>
   );
 }

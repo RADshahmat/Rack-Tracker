@@ -1,10 +1,9 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail, Calendar } from 'lucide-react';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useWarnings, useResolveWarning } from '../hooks/useAdmin';
 
 export function Warnings() {
@@ -14,96 +13,125 @@ export function Warnings() {
   const { mutate: resolveWarning, isPending: isResolving } = useResolveWarning();
 
   const warnings = warningsData?.data || [];
-//console.log('Fetched warnings:', warnings);
+  const unresolvedCount = warnings.filter((w) => !w.resolved).length;
+
   const handleResolveWarning = (warningId: number) => {
     resolveWarning(warningId);
   };
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className=" bg-white dark:bg-slate-900 shadow-lg shadow-amber-500/3 rounded-xl overflow-hidden">
+      {/* Header Info Panel */}
+      <CardHeader className="p-2 md:p-4 border-b border-amber-500/10 bg-amber-500/2 dark:bg-amber-500/1">
         <CardTitle className="flex items-center justify-between">
-          <span>Warnings</span>
-          <Badge variant="outline">
-            {warnings.filter((w) => !w.resolved).length} Unresolved
+          <div>
+            <span className="text-base font-bold tracking-wide text-slate-900 dark:text-slate-100">System Warnings Logs</span>
+          </div>
+          <Badge 
+            variant={unresolvedCount > 0 ? "destructive" : "outline"} 
+            className={`text-xs px-2.5 py-0.5 font-bold tracking-wide uppercase ${
+              unresolvedCount === 0 ? 'text-emerald-500 border-emerald-500/20 bg-emerald-500/5' : ''
+            }`}
+          >
+            {unresolvedCount} Active Alerts
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="unresolved">Unresolved</TabsTrigger>
-            <TabsTrigger value="all">All</TabsTrigger>
+
+      <CardContent className="p-4 md:p-6 space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Tabs Design */}
+          <TabsList className="bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200/40 dark:border-slate-800/40 h-10">
+            <TabsTrigger 
+              value="unresolved" 
+              className="rounded-lg text-sm font-semibold px-4 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 data-[state=active]:shadow-sm transition-all"
+            >
+              Unresolved Matrix
+            </TabsTrigger>
+            <TabsTrigger 
+              value="all"
+              className="rounded-lg text-sm font-semibold px-4 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-amber-600 dark:data-[state=active]:text-amber-400 data-[state=active]:shadow-sm transition-all"
+            >
+              All Events History
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value={activeTab} className="mt-4">
+          <TabsContent value={activeTab} className="mt-4 focus-visible:ring-0 outline-none">
             {warningsLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 size={24} className="animate-spin text-sky-600" />
+              <div className="flex flex-col items-center justify-center py-16 w-full">
+                <Loader2 size={26} className="animate-spin text-amber-500" />
               </div>
             ) : warnings.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <p className="text-sm">
-                  {activeTab === 'unresolved' ? 'No unresolved warnings' : 'No warnings'}
+              <div className="text-center py-16 border border-dashed border-amber-500/20 rounded-xl bg-amber-500/1">
+                <p className="text-sm font-medium text-slate-400 dark:text-slate-500">
+                  {activeTab === 'unresolved' ? 'No unresolved network faults detected.' : 'No historic logging alerts located.'}
                 </p>
               </div>
             ) : (
-                  <div className="overflow-x-auto overflow-y-auto max-h-450px border rounded-md relative">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-20">Rack Tag</TableHead>
-                      <TableHead>Message</TableHead>
-                      <TableHead className="w-24">Status</TableHead>
-                      <TableHead className="w-16">Emailed</TableHead>
-                      <TableHead className="w-32">Created At</TableHead>
-                      <TableHead className="w-24 text-right">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {warnings.map((warning) => (
-                      <TableRow key={warning.id}>
-                        <TableCell className="font-medium text-sm">
-                          {warning.rackTag}
-                        </TableCell>
-                        <TableCell className="text-sm max-w-xs truncate">
-                          {warning.message}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={warning.resolved ? 'default' : 'destructive'}>
+              /* Card Matrix Grid View */
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-150 overflow-y-auto pr-1">
+                {warnings.map((warning) => (
+                  <div
+                    key={warning.id}
+                    className={`p-4 rounded-md border border-yellow-200 dark:border-yellow-900/40 bg-red-50 dark:bg-yellow-900/10 ${
+                      !warning.resolved 
+                        ? 'border-amber-500 shadow-amber-500/0.06 dark:shadow-amber-500/0.04 bg-linear-to-br from-amber-500/2 to-transparent' 
+                        : 'border-amber-500/30 shadow-amber-500/2 opacity-80'
+                    }`}
+                  >
+                    <div>
+                      {/* Card Header Segment */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                          <Badge 
+                            className="text-[9px] px-1.5 py-0.5 uppercase tracking-wider font-bold" 
+                            variant={warning.resolved ? 'default' : 'destructive'}
+                          >
                             {warning.resolved ? 'Resolved' : 'Unresolved'}
                           </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">
-                            {warning.emailed===true ? 'Sent' : '—'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-gray-600 dark:text-gray-400">
-                          {new Date(warning.createdAt).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {!warning.resolved && (
-                            <Button
-                              onClick={() => handleResolveWarning(warning.id)}
-                              disabled={isResolving}
-                              variant="outline"
-                              size="sm"
-                              className="gap-2"
-                            >
-                              {isResolving ? (
-                                <Loader2 size={14} className="animate-spin" />
-                              ) : (
-                                'Resolve'
-                              )}
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </div>
+
+                        {/* Inline Resolution Option */}
+                        {!warning.resolved && (
+                          <Button
+                            onClick={() => handleResolveWarning(warning.id)}
+                            disabled={isResolving}
+                            size="sm"
+                            variant="secondary">
+                            {isResolving ? <Loader2 size={12} className="animate-spin" /> : 'Resolve'}
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Diagnostic Alert Core Context Body */}
+                      <p className="text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed wrap-break-words">
+                        {warning.message}
+                      </p>
+                    </div>
+
+                    {/* Metadata Grid Floor */}
+                    <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-[10px] md:text-[12px] text-slate-400 dark:text-slate-500 font-medium font-mono">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar size={12} className="text-slate-400" />
+                        <span>
+                          {new Date(warning.created_at).toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 justify-end">
+                        <Mail size={12} className={warning.emailed ? 'text-sky-500' : 'text-slate-300 dark:text-slate-700'} />
+                        <span className={warning.emailed ? 'text-sky-500' : 'text-slate-300 dark:text-slate-700'}>
+                          {warning.emailed ? 'Sent' : 'No Email'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </TabsContent>

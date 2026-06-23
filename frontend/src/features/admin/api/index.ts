@@ -13,7 +13,7 @@ export interface Warning {
   message: string;
   resolved: boolean;
   emailed: boolean;
-  createdAt: string;
+  created_at: string;
 }
 
 interface PrometheusStatus {

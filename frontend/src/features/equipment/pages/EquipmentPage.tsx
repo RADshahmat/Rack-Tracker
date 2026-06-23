@@ -22,24 +22,17 @@ export function EquipmentPage() {
   const equipment = data?.data || [];
   const pagination = data?.pagination;
 
-  const filteredEquipment = equipment.filter(
-    (eq) => {
-      // Search filter
-      const matchesSearch =
-        eq.tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        eq.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredEquipment = equipment.filter((eq) => {
+    const matchesSearch =
+      eq.tag.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      eq.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Status filter
-      let matchesStatus = true;
-      if (filterStatus === 'assigned') {
-        matchesStatus = !!eq.rack_id;
-      } else if (filterStatus === 'unassigned') {
-        matchesStatus = !eq.rack_id;
-      }
+    let matchesStatus = true;
+    if (filterStatus === 'assigned') matchesStatus = !!eq.rack_id;
+    else if (filterStatus === 'unassigned') matchesStatus = !eq.rack_id;
 
-      return matchesSearch && matchesStatus;
-    }
-  );
+    return matchesSearch && matchesStatus;
+  });
 
   const handleDelete = (id: number) => {
     if (window.confirm('Are you sure to delete this equipment?')) {
@@ -56,9 +49,9 @@ export function EquipmentPage() {
   };
 
   return (
-    <div className="flex flex-1 overflow-hidden">
-      {/* Left: Equipment Table Section */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex w-full h-full overflow-hidden bg-slate-50 dark:bg-slate-950">
+      {/* Left Pane: Core List/Table Module */}
+      <div className="flex-1 flex flex-col overflow-hidden w-full">
         <EquipmentHeader
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -67,7 +60,7 @@ export function EquipmentPage() {
           onFilterChange={setFilterStatus}
         />
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-y-auto">
           <EquipmentTable
             equipment={filteredEquipment}
             isLoading={isLoading}
@@ -79,33 +72,47 @@ export function EquipmentPage() {
         </div>
 
         {pagination && (
-          <Pagination
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            onPageChange={setCurrentPage}
-          />
+          <div className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         )}
       </div>
 
-      {/* Right: Equipment Preview & Actions */}
+      {/* Right Pane: Desktop Preview Panel Only */}
       {selectedEquipmentId && (
-        <EquipmentPreview
-          equipmentId={selectedEquipmentId}
-          onClose={() => setSelectedEquipmentId(null)}
-        />
+        <div className="hidden lg:flex w-96 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 h-full overflow-y-auto">
+          <EquipmentPreview
+            equipmentId={selectedEquipmentId}
+            onClose={() => setSelectedEquipmentId(null)}
+          />
+        </div>
       )}
 
-      {/* Modals */}
-      {showCreateModal && (
-        <CreateEquipmentModal onClose={() => setShowCreateModal(false)} />
+      {/* Mobile/Tablet Fallback Dialog Overlay */}
+      {selectedEquipmentId && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/40 backdrop-blur-sm lg:hidden p-0 sm:p-4">
+          <div className="fixed inset-0" onClick={() => setSelectedEquipmentId(null)} />
+          <div className="bg-white dark:bg-slate-900 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl h-[85vh] sm:h-auto sm:max-h-[90vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-300 z-10">
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-3 shrink-0 sm:hidden" />
+            <div className="flex-1 overflow-y-auto">
+              <EquipmentPreview
+                equipmentId={selectedEquipmentId}
+                onClose={() => setSelectedEquipmentId(null)}
+              />
+            </div>
+          </div>
+        </div>
       )}
+
+      {/* Control Modals */}
+      {showCreateModal && <CreateEquipmentModal onClose={() => setShowCreateModal(false)} />}
       {editingEquipment && (
-        <EditEquipmentModal
-          equipment={editingEquipment}
-          onClose={() => setEditingEquipment(null)}
-        />
+        <EditEquipmentModal equipment={editingEquipment} onClose={() => setEditingEquipment(null)} />
       )}
     </div>
   );
 }
-

@@ -10,7 +10,7 @@ export function MetricsCard() {
                 Infrastructure Metrics
             </h3>
 
-            <Tabs defaultValue="racks">
+            <Tabs defaultValue="requests">
                 <TabsList className="mb-4">
                     <TabsTrigger value="racks">Racks Created</TabsTrigger>
                     <TabsTrigger value="requests">Request Rate</TabsTrigger>

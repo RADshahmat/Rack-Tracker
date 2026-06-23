@@ -10,7 +10,7 @@ export function Dashboard() {
 
   return (
     <div className="flex-1 overflow-auto">
-      <main className="p-4 lg:p-8 bg-white dark:bg-dark-bg">
+      <main className="p-4 lg:p-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           <StatCard
             label="Racks Created"

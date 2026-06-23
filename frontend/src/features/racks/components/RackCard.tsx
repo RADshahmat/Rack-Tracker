@@ -24,53 +24,56 @@ export function RackCard({ rack, isSelected, onClick, onEdit, onDelete }: RackCa
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg overflow-hidden cursor-pointer transition-all group border-2 ${isSelected
-          ? 'border-sky-500 shadow-lg bg-sky-50 dark:bg-sky-900/20'
-          : 'border-gray-200 dark:border-dark-border hover:border-sky-500 dark:hover:border-sky-500'
+      className={`rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 group border flex flex-col justify-between ${isSelected
+          ? 'border-amber-500 bg-amber-500/[0.02] dark:bg-amber-500/[0.01] shadow-md shadow-amber-500/[0.04]'
+          : 'border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 hover:border-amber-500/40'
         }`}
     >
-      {/* Rack image - top */}
-      <div className="relative overflow-hidden bg-gray-100 dark:bg-dark-bg h-28">
+      {/* Top Graphic Section */}
+      <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-950 h-20 sm:h-24 flex items-center justify-center border-b border-slate-100 dark:border-slate-800/60 p-2">
         <img
           src="/rack.png"
           alt={rack.tag}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+          className="max-h-full max-w-[80%] object-contain opacity-75 group-hover:opacity-100 dark:invert dark:opacity-40 dark:group-hover:opacity-60 transition-all duration-300 group-hover:scale-105"
         />
-        {/* Icons overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-          {/* OPERATOR OR HIGHER CAN EDIT */}
+
+        {/* Interactive Controls Layer Overlay */}
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <RoleGuard minRole="operator">
             <button
               onClick={handleEditClick}
-              className="p-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors"
-              title="Edit rack"
+              className="p-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl transition-colors"
+              title="Modify Node Config"
             >
-              <Edit size={18} />
+              <Edit size={14} />
             </button>
           </RoleGuard>
 
-          {/* STRICTLY ADMIN ONLY */}
           <RoleGuard minRole="admin">
             <button
               onClick={handleDeleteClick}
-              className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-              title="Delete rack"
+              className="p-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition-colors"
+              title="Decommission Node Array"
             >
-              <Trash2 size={18} />
+              <Trash2 size={14} />
             </button>
           </RoleGuard>
         </div>
       </div>
 
-      {/* Rack info - bottom */}
-      <div className="p-3 space-y-2">
+      {/* Asset Identifier Frame */}
+      <div className="p-3 space-y-2 bg-white dark:bg-slate-900">
         <div>
-          <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">{rack.tag}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{rack.name}</p>
+          <p className="font-bold text-xs text-slate-900 dark:text-slate-100 truncate tracking-wide uppercase">
+            {rack.tag}
+          </p>
+          <p className="text-[10px] font-mono text-slate-400 dark:text-slate-500 truncate">
+            {rack.name}
+          </p>
         </div>
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-600 dark:text-gray-400">Total Slots:</span>
-          <span className="font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-dark-bg px-2 py-1 rounded">
+        <div className="flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60">
+          <span className="text-slate-400 font-mono">CAPACITY:</span>
+          <span className="font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-950 px-1.5 py-0.5 rounded">
             {rack.capacity}U
           </span>
         </div>
@@ -78,4 +81,3 @@ export function RackCard({ rack, isSelected, onClick, onEdit, onDelete }: RackCa
     </div>
   );
 }
-
