@@ -46,7 +46,7 @@ export function AlertsPanel() {
                     <span className="text-sm">No active warnings</span>
                 </div>
             ) : (
-                <div className="space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-3 max-h-80 overflow-y-auto">
                     {warnings.map((warning) => (
                         <div
                             key={warning.id}

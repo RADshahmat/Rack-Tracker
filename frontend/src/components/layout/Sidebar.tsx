@@ -24,35 +24,13 @@ export function Sidebar({ isExpanded }: SidebarProps) {
   ];
 
   return (
-    <aside className={`fixed left-0 top-0 h-full bg-white dark:bg-dark-surface border-r border-gray-200 dark:border-dark-border flex flex-col py-4 z-40 transition-all duration-300 ${
-      isExpanded ? 'w-64' : 'w-20'
-    }`}>
-      {/* Logo section - only visible when NOT expanded */}
-      {!isExpanded && (
-        <div className="px-2 mb-6 flex justify-center">
-          <div className="w-12 h-12 bg-sky-600 dark:bg-sky-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-            DC
-          </div>
-        </div>
-      )}
+    <aside
+      className={`fixed md:sticky top-[57px] left-0 h-[calc(100vh-57px)] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800/60 flex flex-col py-4 z-40 transition-all duration-300 ease-in-out
+      ${isExpanded ? 'w-50 translate-x-0' : 'w-18 -translate-x-full md:translate-x-0'}`}
+    >
 
-      {/* Expanded header with logo + name */}
-      {isExpanded && (
-        <div className="px-4 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-sky-600 dark:bg-sky-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0">
-              DC
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-sm text-gray-900 dark:text-white">DataCenter</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">Infrastructure</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Navigation */}
-      <nav className="flex-1 flex flex-col space-y-2 px-2">
+      {/* Primary Context Navigation Stack */}
+      <nav className="flex-1 flex flex-col space-y-1.5 px-3">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -61,43 +39,39 @@ export function Sidebar({ isExpanded }: SidebarProps) {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 h-10 px-3 rounded-lg transition-all ${
-                isActive
-                  ? 'bg-sky-600 dark:bg-sky-600 text-white dark:text-white'
-                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border'
-              }`}
+              className={`flex items-center rounded-xl transition-all duration-200 group relative h-10 ${isExpanded
+                  ? 'gap-3 px-3 w-full'              
+                  : 'justify-center w-12 mx-auto'     
+                } ${isActive
+                  ? 'bg-gradient-to-r from-sky-600 to-sky-500 text-white shadow-sm shadow-sky-500/10'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-950/60 hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
               title={isExpanded ? '' : item.label}
             >
-              <Icon size={20} className="shrink-0" />
-              {isExpanded && <span className="text-sm font-medium">{item.label}</span>}
+              <Icon size={18} className={`shrink-0 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors'}`} />
+
+              {isExpanded && (
+                <span className="text-sm font-medium tracking-wide truncate">
+                  {item.label}
+                </span>
+              )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="flex flex-col space-y-2 pt-4 px-2 border-t border-gray-200 dark:border-dark-border">
-        {/* Theme Toggle */}
+      {/* Control Utility Footer Context */}
+      <div className="flex flex-col space-y-1 pt-4 px-3 border-t border-slate-200 dark:border-slate-800/60">
+        {/* Color Palette Context Filter (Theme Mode) */}
         <button
           onClick={toggleTheme}
-          className={`flex items-center gap-3 h-10 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border transition-all ${isExpanded ? '' : 'justify-center'}`}
-          title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          className={`flex items-center gap-3 h-10 px-3 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-950/60 hover:text-slate-900 dark:hover:text-slate-200 transition-all ${isExpanded ? '' : 'justify-center'}`}
+          title={theme === 'dark' ? 'Activate Light Space' : 'Activate Dark Space'}
         >
-          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          {isExpanded && <span className="text-sm">{theme === 'dark' ? 'Light' : 'Dark'}</span>}
-        </button>
-
-        {/* Logout */}
-        <button
-          className={`flex items-center gap-3 h-10 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-border transition-all ${isExpanded ? '' : 'justify-center'}`}
-          title="Logout"
-        >
-          <LogOut size={20} />
-          {isExpanded && <span className="text-sm">Logout</span>}
+          {theme === 'dark' ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-indigo-500" />}
+          {isExpanded && <span className="text-xs font-medium tracking-wide">{theme === 'dark' ? 'Light Spectrum' : 'Dark Spectrum'}</span>}
         </button>
       </div>
     </aside>
   );
 }
-
-
