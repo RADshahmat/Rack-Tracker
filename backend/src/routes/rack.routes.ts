@@ -20,5 +20,9 @@ router.delete(
     '/:id/attachments/:attachmentId',
     rackController.deleteAttachment.bind(rackController)
 );
+router.get(
+    '/:id/attachments/:attachmentId/download',
+    rackController.downloadAttachment.bind(rackController)
+);
 
 export default router;

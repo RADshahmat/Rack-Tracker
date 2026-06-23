@@ -48,13 +48,26 @@ export function RackDetails({ rackId }: RackDetailsProps) {
     }
   };
 
-  const handleViewAttachment = () => {
+
+  const handleViewAttachment = async () => {
     if (!latestAttachment) return;
     const BACKEND_URL = import.meta.env.VITE_API_URL || 'https://rack-tracker-production-6c19.up.railway.app';
 
-    const downloadUrl = `${BACKEND_URL}/api/racks/${rackId}/attachments/${latestAttachment.id}/download`;
+    const response = await fetch(
+      `${BACKEND_URL}/racks/${rackId}/attachments/${latestAttachment.id}/download`,
+      {
+        credentials: 'include',
+      }
+    );
 
-    window.open(downloadUrl, '_blank');
+    if (!response.ok) {
+      throw new Error('Failed to load PDF');
+    }
+
+    const blob = await response.blob();
+    const pdfUrl = URL.createObjectURL(blob);
+
+    window.open(pdfUrl, '_blank');
   };
 
   if (rackLoading) {
@@ -67,7 +80,7 @@ export function RackDetails({ rackId }: RackDetailsProps) {
 
   if (!rack) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[200px] text-xs font-mono text-slate-400">
+      <div className="flex items-center justify-center h-full min-h-50 text-xs font-mono text-slate-400">
         Telemetry failure context frame data missing.
       </div>
     );

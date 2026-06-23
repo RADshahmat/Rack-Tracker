@@ -7,11 +7,14 @@ import { useUpdateEquipment, useCreateEquipment, useRackSlots } from '../hooks/u
 import { useRacks } from '@/features/racks/hooks/useRacks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Form, FormField, FormMessage } from '@/components/ui/form';
 import { handleBackendErrors } from '@/utils/errorHandler';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+
+
 
 interface EquipmentFormProps {
   equipment?: Equipment;
@@ -33,6 +36,15 @@ export function EquipmentForm({
   const [selectedRackId, setSelectedRackId] = useState<number | null>(
     equipment?.rack_id || defaultRackId || null
   );
+  const EQUIPMENT_TYPES = [
+    { label: 'Server', value: 'server' },
+    { label: 'Switch', value: 'switch' },
+    { label: 'Router', value: 'router' },
+    { label: 'Database', value: 'database' },
+    { label: 'Firewall', value: 'firewall' },
+    { label: 'PDU', value: 'pdu' },
+  ];
+
   const isEditing = !!equipment;
   const updateEquipment = useUpdateEquipment();
   const createEquipment = useCreateEquipment();
@@ -194,16 +206,23 @@ export function EquipmentForm({
         {errors.name && <FormMessage>{errors.name.message}</FormMessage>}
       </FormField>
 
+      {/* Type Dropdown Element */}
       <FormField>
         <Label htmlFor="type">Type *</Label>
-        <Input
+        <Select
           id="type"
-          placeholder="e.g., Server, Router, Switch"
-          disabled={isSubmitting || isLoading}
           {...register('type')}
-        />
+        >
+          <option value="">Select hardware profile configuration</option>
+          {EQUIPMENT_TYPES.map((typeOption) => (
+            <option key={typeOption.value} value={typeOption.value}>
+              {typeOption.label}
+            </option>
+          ))}
+        </Select>
         {errors.type && <FormMessage>{errors.type.message}</FormMessage>}
       </FormField>
+
 
 {/* 
       <FormField>

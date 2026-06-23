@@ -19,7 +19,7 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[300px] w-full bg-white dark:bg-slate-900">
+      <div className="flex flex-col items-center justify-center h-full min-h-75 w-full bg-white dark:bg-slate-900">
         <Loader2 className="text-sky-500 animate-spin" size={24} />
       </div>
     );
@@ -35,7 +35,7 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
           </Button>
         </div>
         <div className="flex-1 flex items-center justify-center p-8 text-center text-slate-400">
-          <p className="text-xs font-medium">Failed to sync hardware telemetry bounds.</p>
+          <p className="text-xs font-medium">Failed to load equipment details.</p>
         </div>
       </div>
     );
@@ -46,7 +46,7 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
       <div className="flex flex-col h-full w-full bg-white dark:bg-slate-900">
         {/* Header Block */}
         <div className="p-4 md:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between sticky top-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-10">
-          <h3 className="font-bold text-xs tracking-wider text-slate-900 dark:text-slate-200 uppercase">Telemetry Preview</h3>
+          <h3 className="font-bold text-xs tracking-wider text-slate-900 dark:text-slate-200 uppercase">Equipment Preview</h3>
           <Button onClick={onClose} variant="outline">
             <X size={16} className="text-slate-500" />
           </Button>
@@ -54,11 +54,16 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
 
         {/* Content Body Space */}
         <div className="flex-1 overflow-y-auto p-4 md:p-5 space-y-5">
-          {/* Hardware Blueprint Hero Card */}
-          <div className="bg-slate-950 rounded-xl h-36 flex flex-col items-center justify-center relative overflow-hidden border border-slate-800 shadow-inner">
-            <Server size={36} className="text-slate-700 dark:text-slate-800 mb-1 absolute scale-125 opacity-20 -right-2 -bottom-4" />
-            <span className="text-[10px] font-mono tracking-widest text-sky-500/70 font-semibold uppercase mb-1">SYSTEM NODE NODEID</span>
-            <span className="text-sm font-mono text-slate-300 tracking-wider font-semibold">{equipment.tag}</span>
+          
+          <div className="dark:bg-slate-950 rounded-2xl p-4 flex flex-col items-center justify-center gap-3 relative overflow-hidden dark:border dark:border-slate-800 shadow-2xl group">            
+            <div className="h-20 sm:h-24  item-center justify-center flex">
+              <img
+                src="/network-switch.png"
+                alt={equipment.tag}
+                className="max-h-full max-w-[80%] object-contain group-hover:opacity-100 dark:group-hover:opacity-60 transition-all duration-300 group-hover:scale-105"
+              />  
+            </div>
+            <div className="text-xs font-mono text-slate-500 tracking-wider font-semibold">{equipment.tag}</div>
           </div>
 
           {/* Core Configuration Metrics */}
@@ -101,7 +106,7 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
 
           {/* Dynamic Rack Context Card */}
           {equipment.rack_id ? (
-            <div className="p-4 bg-gradient-to-r from-sky-500/10 to-indigo-500/5 dark:from-sky-500/5 rounded-xl border border-sky-100 dark:border-sky-950">
+            <div className="p-4 bg-linear-to-r from-sky-500/10 to-indigo-500/5 dark:from-sky-500/5 rounded-xl border border-sky-100 dark:border-sky-950">
               <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider block mb-1">Assigned Rack Location</span>
               <p className="text-xs font-mono font-bold text-slate-800 dark:text-sky-300 flex items-center gap-2">
                 <Server size={12} /> {equipment.rack_tag}
@@ -129,7 +134,7 @@ export function EquipmentPreview({ equipmentId, onClose }: EquipmentPreviewProps
             <RoleGuard minRole="operator">
               <Button
                 onClick={() => setShowPlaceInRackModal(true)}
-                className="w-full h-9 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white text-xs font-bold rounded-xl transition-all shadow-sm shadow-sky-600/10"
+                className="w-full h-9 bg-linear-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white text-xs font-bold rounded-xl transition-all shadow-sm shadow-sky-600/10"
               >
                 Place in Rack Mount Configuration
               </Button>

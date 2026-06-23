@@ -193,6 +193,46 @@ class RackController {
         }
     }
 
+    async downloadAttachment( req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const rackId = parseInt(req.params.id, 10);
+            const attachmentId = parseInt(req.params.attachmentId, 10);
+
+            if (isNaN(rackId) || isNaN(attachmentId)) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Invalid ID',
+                });
+                return;
+            }
+
+            const attachment = await rackService.getAttachmentFile(
+                rackId,
+                attachmentId
+            );
+
+            if (!fs.existsSync(attachment.file_path)) {
+                res.status(404).json({
+                    success: false,
+                    message: 'File not found on disk',
+                });
+                return;
+            }
+
+            res.setHeader('Content-Type', 'application/pdf');
+
+            // Browser opens PDF instead of downloading
+            res.setHeader(
+                'Content-Disposition',
+                `inline; filename="${attachment.original_name}"`
+            );
+
+            res.sendFile(attachment.file_path);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async deleteAttachment(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const attachmentId = parseInt(req.params.attachmentId, 10);
