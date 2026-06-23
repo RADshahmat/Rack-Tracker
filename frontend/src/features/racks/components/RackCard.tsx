@@ -34,7 +34,7 @@ export function RackCard({ rack, isSelected, onClick, onEdit, onDelete }: RackCa
         <img
           src="/rack.png"
           alt={rack.tag}
-          className="max-h-full max-w-[80%] object-contain opacity-75 group-hover:opacity-100 dark:invert dark:opacity-40 dark:group-hover:opacity-60 transition-all duration-300 group-hover:scale-105"
+          className="max-h-full max-w-[80%] object-contain opacity-75 group-hover:opacity-100  dark:opacity-40 dark:group-hover:opacity-60 transition-all duration-300 group-hover:scale-105"
         />
 
         {/* Interactive Controls Layer Overlay */}

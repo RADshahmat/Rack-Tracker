@@ -70,7 +70,7 @@ export function EquipmentHeader({
               {showFilterMenu && (
                 <>
                   <div className="fixed inset-0 z-20" onClick={() => setShowFilterMenu(false)} />
-                  <div className="absolute top-full right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-xl shadow-xl z-30 min-w-[160px] overflow-hidden p-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <div className="absolute top-full right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-xl shadow-xl z-30 min-w-40 overflow-hidden p-1 animate-in fade-in slide-in-from-top-1 duration-150">
                     {filterOptions.map((option) => (
                       <button
                         key={option.value}
@@ -96,7 +96,7 @@ export function EquipmentHeader({
           <RoleGuard minRole="operator">
             <Button
               onClick={onCreateNew}
-              className="gap-2 h-9 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white text-xs font-bold shadow-sm shadow-sky-600/10 transition-all w-full sm:w-auto"
+              className="gap-2 h-9 px-4 rounded-xl bg-linear-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white text-xs font-bold shadow-sm shadow-sky-600/10 transition-all w-full sm:w-auto"
             >
               <Plus size={15} />
               Add Equipment
