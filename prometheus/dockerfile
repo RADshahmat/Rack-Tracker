@@ -1,0 +1,10 @@
+FROM prom/prometheus:v2.45.0
+
+# Copy the config from your folder into the container
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+
+# Force Prometheus to save metrics data into the persistent volume mount point
+CMD [ "--config.file=/etc/prometheus/prometheus.yml", \
+    "--storage.tsdb.path=/prometheus" ]
+
+EXPOSE 9090
