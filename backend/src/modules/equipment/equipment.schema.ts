@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+const EQUIPMENT_TYPES = ['server', 'switch', 'router', 'database', 'firewall', 'pdu'] as const;
 export const createEquipmentSchema = z.object({
     tag: z
         .string()
@@ -11,9 +11,9 @@ export const createEquipmentSchema = z.object({
         .min(1, 'Name is required')
         .max(100, 'Name must be 100 characters or less'),
     type: z
-        .string()
-        .max(50, 'Type must be 50 characters or less')
-        .optional(),
+        .enum(EQUIPMENT_TYPES, {
+            errorMap: () => ({ message: 'Invalid hardware infrastructure classification selection' })
+        }),
     rack_id: z
         .number()
         .int('Rack ID must be an integer')
@@ -43,8 +43,9 @@ export const updateEquipmentSchema = z.object({
         .max(100, 'Name must be 100 characters or less')
         .optional(),
     type: z
-        .string()
-        .max(50, 'Type must be 50 characters or less')
+        .enum(EQUIPMENT_TYPES, {
+            errorMap: () => ({ message: 'Invalid hardware infrastructure classification selection' })
+        })
         .optional(),
     rack_id: z
         .number()
